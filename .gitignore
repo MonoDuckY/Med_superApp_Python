@@ -1,0 +1,19 @@
+# Environments
+venv/
+env/
+.env
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+
+# Data and Models (Tránh đẩy file ảnh hoặc trọng số AI quá nặng lên Git)
+*.h5
+*.pt
+*.pth
+*.onnx
+dataset/
