@@ -64,16 +64,23 @@ import os
 import requests
 import logging
 
+from .preprocess import detect_safe_area, remove_text_and_callipers, detect_calipers
+from .enhance import apply_srad, adjust_brightness_contrast, adjust_sharpness
+from .xml_exporter import save_to_combined_xml
+from .augment import augment_image_and_xml
+
 logger = logging.getLogger(__name__)
+
+# Thư mục chứa template caliper tĩnh (nằm cùng cấp với pipeline.py)
+TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "templates")
 
 def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, options: dict):
     """
-    Tiền xử lý hàng loạt ảnh từ file zip. Chạy ngầm trong BackgroundTask.
-    Sau khi xử lý xong, nén lại và gửi thông báo qua Webhook.
+    Tiền xử lý hàng loạt ảnh từ file zip theo cấu hình options (UC-23).
+    Chạy ngầm trong BackgroundTask. Sau khi xử lý xong, nén lại và gửi thông báo qua Webhook.
     """
     logger.info(f"[JOB {job_id}] Bắt đầu xử lý dataset...")
     
-    # Tạo thư mục tạm để làm việc
     with tempfile.TemporaryDirectory() as temp_dir:
         input_zip_path = os.path.join(temp_dir, "input.zip")
         extract_dir = os.path.join(temp_dir, "extracted")
@@ -83,16 +90,14 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
         os.makedirs(extract_dir, exist_ok=True)
         os.makedirs(output_dir, exist_ok=True)
         
-        # Ghi file zip gốc
         with open(input_zip_path, 'wb') as f:
             f.write(zip_bytes)
             
-        # Giải nén
         with zipfile.ZipFile(input_zip_path, 'r') as zip_ref:
             zip_ref.extractall(extract_dir)
             
-        # Duyệt qua các ảnh và xử lý
         processed_count = 0
+        
         for root, dirs, files in os.walk(extract_dir):
             for file_name in files:
                 if file_name.lower().endswith(('.png', '.jpg', '.jpeg')):
@@ -102,21 +107,46 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
                     if image is None:
                         continue
                         
-                    # Preprocess tùy theo options
-                    if options.get("enable_safe_area", True):
+                    # 1. Điều chỉnh ảnh (Brightness, Contrast, Sharpness)
+                    brightness = options.get("brightness", 0)
+                    contrast = options.get("contrast", 1.0)
+                    sharpness = options.get("sharpness", 0.0)
+                    image = adjust_brightness_contrast(image, brightness, contrast)
+                    image = adjust_sharpness(image, sharpness)
+                    
+                    if options.get("enable_safe_area", False):
                         image, _ = detect_safe_area(image)
-                    if options.get("enable_text_removal", True):
-                        image = remove_text_and_callipers(image)
-                    if options.get("enable_srad", True):
+                        
+                    if options.get("enable_srad", False):
                         n_iter = options.get("srad_iterations", 10)
                         image = apply_srad(image, n_iter=n_iter)
                         
-                    # Lưu lại
-                    out_path = os.path.join(output_dir, file_name)
-                    cv2.imwrite(out_path, image)
+                    # 2. Phát hiện Caliper và Trích xuất XML
+                    caliper_mask, boxes = detect_calipers(image, TEMPLATES_DIR)
+                    
+                    # 3. Xóa Caliper & Chữ trên ảnh gốc (nếu được yêu cầu)
+                    if options.get("enable_text_removal", False):
+                        # Xóa caliper bằng mask vừa tìm được
+                        image = cv2.inpaint(image, caliper_mask, 3, cv2.INPAINT_TELEA)
+                        # Dùng OCR để xóa các chữ viết khác
+                        image = remove_text_and_callipers(image)
+                        
+                    # 4. Lưu ảnh gốc đã xử lý và file XML của nó
+                    base_name = os.path.splitext(file_name)[0]
+                    cv2.imwrite(os.path.join(output_dir, f"{base_name}.jpg"), image)
+                    save_to_combined_xml(os.path.join(output_dir, f"{base_name}.xml"), f"{base_name}.jpg", image.shape, boxes)
                     processed_count += 1
                     
-        # Nén lại thành file zip mới
+                    # 5. Làm giàu dữ liệu (Augmentation - Optional)
+                    if options.get("enable_augmentation", False):
+                        aug_results = augment_image_and_xml(image, boxes)
+                        for aug_img, aug_boxes, suffix in aug_results:
+                            aug_name = f"{base_name}_{suffix}"
+                            cv2.imwrite(os.path.join(output_dir, f"{aug_name}.jpg"), aug_img)
+                            save_to_combined_xml(os.path.join(output_dir, f"{aug_name}.xml"), f"{aug_name}.jpg", aug_img.shape, aug_boxes)
+                            processed_count += 1
+                    
+        # 6. Đóng gói lại thành Zip
         with zipfile.ZipFile(output_zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
             for root, dirs, files in os.walk(output_dir):
                 for file_name in files:
@@ -124,15 +154,13 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
                     arcname = os.path.relpath(file_path, output_dir)
                     zipf.write(file_path, arcname)
                     
-        logger.info(f"[JOB {job_id}] Đã xử lý {processed_count} ảnh.")
+        logger.info(f"[JOB {job_id}] Đã xử lý và tạo ra {processed_count} files (cả Ảnh và XML).")
         
-        # Gửi Webhook báo cáo (Thực tế nên upload file zip này lên một Storage server local rồi gửi URL qua Webhook,
-        # tạm thời gửi URL giả lập để Spring Boot biết là đã hoàn thành)
         result = {
             "job_id": job_id,
             "status": "success",
             "processed_count": processed_count,
-            "download_url": f"http://127.0.0.1:8000/download/processed_{job_id}.zip" # URL giả lập
+            "download_url": f"http://127.0.0.1:8000/download/processed_{job_id}.zip"
         }
         
         if webhook_url:

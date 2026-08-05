@@ -51,3 +51,29 @@ def apply_srad(img_rgb: np.ndarray, n_iter: int = 15) -> np.ndarray:
     gray_filtered = np.clip(gray_filtered, 0, 255).astype(np.uint8)
     
     return cv2.cvtColor(gray_filtered, cv2.COLOR_GRAY2RGB)
+
+def adjust_brightness_contrast(image: np.ndarray, brightness: int = 0, contrast: float = 1.0) -> np.ndarray:
+    """
+    Điều chỉnh độ sáng và độ tương phản.
+    - brightness: [-255, 255]
+    - contrast: [0.0, 3.0]
+    """
+    if brightness == 0 and contrast == 1.0:
+        return image
+    
+    # img = img * contrast + brightness
+    result = cv2.convertScaleAbs(image, alpha=contrast, beta=brightness)
+    return result
+
+def adjust_sharpness(image: np.ndarray, amount: float = 0.0) -> np.ndarray:
+    """
+    Tăng độ sắc nét bằng Unsharp Masking.
+    - amount: mức độ sắc nét [0.0, 2.0]
+    """
+    if amount <= 0.0:
+        return image
+        
+    blurred = cv2.GaussianBlur(image, (0, 0), 3.0)
+    # result = original * (1 + amount) - blurred * amount
+    result = cv2.addWeighted(image, 1.0 + amount, blurred, -amount, 0)
+    return result
