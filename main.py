@@ -1,4 +1,5 @@
-from fastapi import FastAPI, UploadFile, File, Form, BackgroundTasks
+from fastapi import FastAPI, UploadFile, File, Form, BackgroundTasks, HTTPException
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 
@@ -67,6 +68,23 @@ async def analyze_ultrasound(
 
 import uuid
 import json
+import os
+
+@app.get("/download/{filename}")
+async def download_file(filename: str):
+    """
+    Tải về file ZIP kết quả đã được xử lý.
+    """
+    if not filename.endswith(".zip"):
+        raise HTTPException(status_code=400, detail="Chỉ cho phép tải file ZIP")
+        
+    outputs_dir = os.path.join(os.path.dirname(__file__), "outputs")
+    file_path = os.path.join(outputs_dir, filename)
+    
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Không tìm thấy file kết quả")
+        
+    return FileResponse(path=file_path, filename=filename, media_type="application/zip")
 
 @app.post("/api/v1/ai/research/preprocess-dataset")
 async def preprocess_dataset(

@@ -5,7 +5,11 @@ from typing import Dict, Any
 
 from .preprocess import detect_safe_area, remove_text_and_callipers
 from .enhance import apply_srad
-from .segment import MedSAM_InferenceModel
+# Tạm thời comment phần import AI model vì theo kế hoạch sẽ train AI sau
+# from .segment import MedSAM_InferenceModel
+class MedSAM_InferenceModel:
+    def predict(self, image, bbox):
+        return {"annotations": []}
 
 # Khởi tạo model ở cấp độ module (Singleton pattern) để tái sử dụng
 medsam_model = MedSAM_InferenceModel()
@@ -71,6 +75,16 @@ from .augment import augment_image_and_xml
 
 logger = logging.getLogger(__name__)
 
+import threading
+def send_progress_webhook(url, job_id, processed, total):
+    if not url: return
+    def _send():
+        try:
+            requests.post(url, json={"job_id": job_id, "status": "processing", "processed": processed, "total": total}, timeout=3)
+        except Exception:
+            pass
+    threading.Thread(target=_send, daemon=True).start()
+
 # Thư mục chứa template caliper tĩnh (nằm cùng cấp với pipeline.py)
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "templates")
 
@@ -81,14 +95,26 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
     """
     logger.info(f"[JOB {job_id}] Bắt đầu xử lý dataset...")
     
+    # Tạo thư mục outputs vĩnh viễn ở root project
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    outputs_dir = os.path.join(base_dir, "outputs")
+    os.makedirs(outputs_dir, exist_ok=True)
+    
     with tempfile.TemporaryDirectory() as temp_dir:
         input_zip_path = os.path.join(temp_dir, "input.zip")
         extract_dir = os.path.join(temp_dir, "extracted")
         output_dir = os.path.join(temp_dir, "processed")
-        output_zip_path = os.path.join(temp_dir, f"processed_{job_id}.zip")
+        
+        # Đường dẫn tới file ZIP vĩnh viễn
+        output_zip_path = os.path.join(outputs_dir, f"processed_{job_id}.zip")
         
         os.makedirs(extract_dir, exist_ok=True)
-        os.makedirs(output_dir, exist_ok=True)
+        
+        # Tạo 2 thư mục con cho ảnh và xml
+        images_dir = os.path.join(output_dir, "images")
+        annotations_dir = os.path.join(output_dir, "annotations")
+        os.makedirs(images_dir, exist_ok=True)
+        os.makedirs(annotations_dir, exist_ok=True)
         
         with open(input_zip_path, 'wb') as f:
             f.write(zip_bytes)
@@ -97,10 +123,18 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
             zip_ref.extractall(extract_dir)
             
         processed_count = 0
+        current_file_index = 0
+        
+        # Đếm tổng số file ảnh để tính % tiến độ
+        total_files = sum(1 for r, _, fs in os.walk(extract_dir) for f in fs if f.lower().endswith(('.png', '.jpg', '.jpeg')))
+        if total_files == 0:
+            total_files = 1 # Tránh chia cho 0
+        logger.info(f"[JOB {job_id}] Tìm thấy tổng cộng {total_files} ảnh gốc cần xử lý.")
         
         for root, dirs, files in os.walk(extract_dir):
             for file_name in files:
                 if file_name.lower().endswith(('.png', '.jpg', '.jpeg')):
+                    current_file_index += 1
                     img_path = os.path.join(root, file_name)
                     image = cv2.imread(img_path)
                     
@@ -133,8 +167,8 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
                         
                     # 4. Lưu ảnh gốc đã xử lý và file XML của nó
                     base_name = os.path.splitext(file_name)[0]
-                    cv2.imwrite(os.path.join(output_dir, f"{base_name}.jpg"), image)
-                    save_to_combined_xml(os.path.join(output_dir, f"{base_name}.xml"), f"{base_name}.jpg", image.shape, boxes)
+                    cv2.imwrite(os.path.join(images_dir, f"{base_name}.jpg"), image)
+                    save_to_combined_xml(os.path.join(annotations_dir, f"{base_name}.xml"), f"{base_name}.jpg", image.shape, boxes)
                     processed_count += 1
                     
                     # 5. Làm giàu dữ liệu (Augmentation - Optional)
@@ -142,9 +176,14 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
                         aug_results = augment_image_and_xml(image, boxes)
                         for aug_img, aug_boxes, suffix in aug_results:
                             aug_name = f"{base_name}_{suffix}"
-                            cv2.imwrite(os.path.join(output_dir, f"{aug_name}.jpg"), aug_img)
-                            save_to_combined_xml(os.path.join(output_dir, f"{aug_name}.xml"), f"{aug_name}.jpg", aug_img.shape, aug_boxes)
+                            cv2.imwrite(os.path.join(images_dir, f"{aug_name}.jpg"), aug_img)
+                            save_to_combined_xml(os.path.join(annotations_dir, f"{aug_name}.xml"), f"{aug_name}.jpg", aug_img.shape, aug_boxes)
                             processed_count += 1
+                    
+                    # Báo cáo tiến độ (mỗi 5 file hoặc file cuối cùng)
+                    if current_file_index % 5 == 0 or current_file_index == total_files:
+                        logger.info(f"[JOB {job_id}] Đang xử lý: {current_file_index}/{total_files} ảnh ({(current_file_index/total_files*100):.1f}%)")
+                        send_progress_webhook(webhook_url, job_id, current_file_index, total_files)
                     
         # 6. Đóng gói lại thành Zip
         with zipfile.ZipFile(output_zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
