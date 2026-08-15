@@ -145,3 +145,24 @@ def detect_calipers(image: np.ndarray, templates_dir: str, threshold: float = 0.
             boxes.append({'name': class_name, 'xmin': xmin, 'ymin': ymin, 'xmax': xmax, 'ymax': ymax})
             
     return mask, boxes
+
+def highlight_calipers_on_image(image: np.ndarray, mask: np.ndarray, boxes: list[dict], color=(0, 0, 255), draw_box=True) -> np.ndarray:
+    """
+    Tô màu đỏ lên các điểm caliper phát hiện được trên ảnh và vẽ bounding box viền đỏ.
+    """
+    result = image.copy()
+    if mask is not None and np.any(mask > 0):
+        # Nhuộm đỏ các pixel của caliper (BGR format: [0, 0, 255])
+        result[mask > 0] = color
+        
+    if draw_box and boxes:
+        for b in boxes:
+            xmin, ymin = int(b['xmin']), int(b['ymin'])
+            xmax, ymax = int(b['xmax']), int(b['ymax'])
+            cv2.rectangle(result, (xmin, ymin), (xmax, ymax), color, 1)
+            # Vẽ nhãn nhỏ góc trên của box
+            label = b.get('name', 'caliper')
+            cv2.putText(result, label, (xmin, max(12, ymin - 3)), cv2.FONT_HERSHEY_SIMPLEX, 0.35, color, 1, cv2.LINE_AA)
+            
+    return result
+
