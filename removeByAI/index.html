@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <style>.engine-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#b8f36b;color:#122011;font-size:18px}.engine-copy{display:flex;flex-direction:column;gap:7px;min-width:220px}.engine-copy strong{font-size:13px}.engine-copy strong span{color:#8c9994;font:9px 'DM Mono',monospace;margin-left:8px}.engine-ready{margin-left:auto;color:#b8f36b;font:11px 'DM Mono',monospace;letter-spacing:.1em}.detector{border-left:1px solid #2b3331;padding-left:25px}</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caliper Cleanroom</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>.mask-stage{position:relative;height:330px;background:#0c0f0f;border-radius:8px;overflow:hidden}.mask-stage img{display:block}.mask-stage canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}.mask-tools{display:flex;justify-content:space-between;padding-top:9px;color:#8c9994;font:10px 'DM Mono',monospace}.mask-tools button{background:transparent;border:1px solid #2b3331;color:#b8f36b;border-radius:4px;padding:6px;font:9px 'DM Mono',monospace}</style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark">✦</span><span>CALIPER <em>CLEANROOM</em></span></div>
+        <div class="status"><span class="pulse"></span> LAMA ENGINE / READY</div>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">ULTRASOUND IMAGE RESTORATION</p>
+        <h1>Remove the marks.<br /><span>Preserve the evidence.</span></h1>
+        <p class="intro">Tự động phát hiện dấu đánh dấu bằng template matching, sau đó dùng LaMa để làm sạch ảnh mà vẫn giữ nguyên vùng không được chọn.</p>
+      </section>
+
+      <section class="config panel">
+        <div class="engine-icon">✦</div><div class="engine-copy"><label>PROCESSING ENGINE</label><strong>LaMa Inpainting <span>LOCAL / CPU</span></strong></div>
+        <div class="engine-copy detector"><label>DETECTOR</label><strong>Template matching <span>4 TEMPLATES</span></strong></div>
+        <div class="engine-ready"><span class="pulse"></span> READY</div>
+      </section>
+
+      <section class="workspace">
+        <div class="image-card panel" id="inputCard">
+          <div class="card-head"><div><span class="step">01</span><span class="card-title">ẢNH GỐC</span></div><span class="tag">INPUT</span></div>
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" hidden />
+            <div class="drop-icon">＋</div><h2>Thả ảnh vào đây</h2><p>hoặc <button class="link-button" id="browse" type="button">chọn từ thiết bị</button></p><small>PNG · JPG · WEBP / TỐI ĐA 20MB</small>
+          </div>
+          <div class="preview-wrap hidden" id="inputPreviewWrap"><div class="mask-stage"><img id="inputPreview" alt="Ảnh gốc" /><canvas id="maskCanvas"></canvas></div><div class="image-meta"><span id="fileName">—</span><button id="removeFile" type="button">×</button></div><div class="mask-tools"><span>Tô vùng caliper cần xóa</span><button id="clearMask" type="button">XÓA MASK</button></div></div>
+        </div>
+
+        <div class="arrow">→</div>
+
+        <div class="image-card panel output-card">
+          <div class="card-head"><div><span class="step">02</span><span class="card-title">KẾT QUẢ</span></div><span class="tag output-tag" id="outputTag">WAITING</span></div>
+          <div class="result-area" id="resultArea"><div class="result-placeholder"><div class="sparkle">✦</div><p>Kết quả xử lý sẽ xuất hiện ở đây</p><small>LaMa sẽ dùng mask tự động hoặc mask bạn tô</small></div><img id="outputPreview" class="hidden" alt="Ảnh sau xử lý" /></div>
+          <button class="download hidden" id="downloadBtn" type="button">TẢI ẢNH KẾT QUẢ <span>↓</span></button>
+        </div>
+      </section>
+
+      <section class="controls"><button class="process" id="processBtn" type="button"><span>✦</span> XỬ LÝ ẢNH <small>LaMa</small></button><p id="message" class="message">Chọn ảnh, tô vùng caliper rồi bắt đầu.</p></section>
+
+      <details class="prompt-details"><summary>Chi tiết pipeline <span>+</span></summary><pre>01  Template matching trên ảnh grayscale đã bilateral filter
+02  Loại bỏ detection trùng tọa độ và vùng biên giao diện
+03  Tạo mask trắng từ bounding box của các dấu phát hiện
+04  LaMa inpainting, giữ nguyên các vùng ngoài mask</pre></details>
+      <footer><span>CALIPER CLEANROOM / LOCAL TOOL</span><span>ẢNH KHÔNG ĐƯỢC LƯU TRÊN SERVER</span></footer>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
