@@ -1,6 +1,11 @@
 import cv2
 import numpy as np
 import os
+import torch
+# Force CPU to avoid Windows CUDA backend errors
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
+torch.cuda.is_available = lambda: False
+
 from simple_lama_inpainting import SimpleLama
 from PIL import Image
 
@@ -75,29 +80,49 @@ def detect_calipers(image: np.ndarray, templates_dir: str, threshold: float = 0.
             
     return mask, boxes
 
-def inpaint_calipers(image: np.ndarray, templates_dir: str) -> tuple[np.ndarray, np.ndarray]:
+def inpaint_calipers(image: np.ndarray, templates_dir: str) -> tuple[np.ndarray, np.ndarray, list]:
     """
     Detects calipers and removes them using LaMa inpainting model.
+    Uses Downscale-Inpaint-Upscale blending to massively speed up CPU inference.
     """
-    # 1. Detect calipers and get mask
+    # 1. Detect calipers and get exact mask on ORIGINAL high-res image
     mask, boxes = detect_calipers(image, templates_dir)
     
-    # Check if mask is empty
     if not np.any(mask):
-        return image, mask
+        return image, mask, boxes
 
-    # 2. Convert to PIL Image for SimpleLama
-    image_pil = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-    
     # Dilate mask slightly for better inpainting results at edges
     kernel = np.ones((5, 5), np.uint8)
     dilated_mask = cv2.dilate(mask, kernel, iterations=2)
-    mask_pil = Image.fromarray(dilated_mask).convert('L')
     
-    # 3. Perform Inpainting using LaMa
+    # 2. Downscale image and mask for LaMa (max dimension 768px)
+    h_orig, w_orig = image.shape[:2]
+    max_dim = 768
+    
+    scale_factor = 1.0
+    if max(h_orig, w_orig) > max_dim:
+        scale_factor = max_dim / float(max(h_orig, w_orig))
+        
+    new_w = int(w_orig * scale_factor)
+    new_h = int(h_orig * scale_factor)
+    
+    small_image = cv2.resize(image, (new_w, new_h), interpolation=cv2.INTER_AREA)
+    small_mask = cv2.resize(dilated_mask, (new_w, new_h), interpolation=cv2.INTER_NEAREST)
+    
+    # 3. Convert to PIL Image for SimpleLama
+    image_pil = Image.fromarray(cv2.cvtColor(small_image, cv2.COLOR_BGR2RGB))
+    mask_pil = Image.fromarray(small_mask).convert('L')
+    
+    # 4. Perform Fast Inpainting using LaMa on small image
     result_pil = lama(image_pil, mask_pil)
+    small_result_cv2 = cv2.cvtColor(np.array(result_pil), cv2.COLOR_RGB2BGR)
     
-    # 4. Convert back to OpenCV format
-    result_cv2 = cv2.cvtColor(np.array(result_pil), cv2.COLOR_RGB2BGR)
+    # 5. Upscale the inpainted image back to original resolution
+    large_inpainted_cv2 = cv2.resize(small_result_cv2, (w_orig, h_orig), interpolation=cv2.INTER_CUBIC)
     
-    return result_cv2, dilated_mask
+    # 6. Blend ONLY the inpainted regions back to the high-res original image
+    # (keeps original sharpness everywhere else)
+    mask_3d = cv2.cvtColor(dilated_mask, cv2.COLOR_GRAY2BGR) / 255.0
+    final_result = (image * (1.0 - mask_3d) + large_inpainted_cv2 * mask_3d).astype(np.uint8)
+    
+    return final_result, dilated_mask, boxes

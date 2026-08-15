@@ -71,6 +71,7 @@ import logging
 from .preprocess import detect_safe_area, remove_text_and_callipers, detect_calipers
 from .enhance import apply_srad, adjust_brightness_contrast, adjust_sharpness
 from .xml_exporter import save_to_combined_xml
+from .yolo_exporter import save_to_yolo_txt
 from .augment import augment_image_and_xml
 
 logger = logging.getLogger(__name__)
@@ -110,11 +111,16 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
         
         os.makedirs(extract_dir, exist_ok=True)
         
-        # Tạo 2 thư mục con cho ảnh và xml
-        images_dir = os.path.join(output_dir, "images")
-        annotations_dir = os.path.join(output_dir, "annotations")
+        # Tạo cấu trúc thư mục chuẩn YOLO
+        images_dir = os.path.join(output_dir, "images", "train")
+        labels_dir = os.path.join(output_dir, "labels", "train")
         os.makedirs(images_dir, exist_ok=True)
-        os.makedirs(annotations_dir, exist_ok=True)
+        os.makedirs(labels_dir, exist_ok=True)
+        
+        # Tạo file data.yaml
+        data_yaml_content = f"train: images/train\nval: images/train\n\nnc: 3\nnames: ['plus', 'x_mark', 'caliper']\n"
+        with open(os.path.join(output_dir, "data.yaml"), "w") as f:
+            f.write(data_yaml_content)
         
         with open(input_zip_path, 'wb') as f:
             f.write(zip_bytes)
@@ -165,10 +171,14 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
                         # Dùng OCR để xóa các chữ viết khác
                         image = remove_text_and_callipers(image)
                         
-                    # 4. Lưu ảnh gốc đã xử lý và file XML của nó
+                    # 4. Lưu ảnh gốc đã xử lý và file YOLO txt của nó
                     base_name = os.path.splitext(file_name)[0]
                     cv2.imwrite(os.path.join(images_dir, f"{base_name}.jpg"), image)
-                    save_to_combined_xml(os.path.join(annotations_dir, f"{base_name}.xml"), f"{base_name}.jpg", image.shape, boxes)
+                    save_to_yolo_txt(os.path.join(labels_dir, f"{base_name}.txt"), image.shape, boxes)
+                    
+                    # (Tùy chọn) Lưu thêm XML cho mục đích dự phòng, hoặc bỏ qua.
+                    # save_to_combined_xml(os.path.join(output_dir, "annotations", f"{base_name}.xml"), f"{base_name}.jpg", image.shape, boxes)
+                    
                     processed_count += 1
                     
                     # 5. Làm giàu dữ liệu (Augmentation - Optional)
@@ -177,7 +187,7 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
                         for aug_img, aug_boxes, suffix in aug_results:
                             aug_name = f"{base_name}_{suffix}"
                             cv2.imwrite(os.path.join(images_dir, f"{aug_name}.jpg"), aug_img)
-                            save_to_combined_xml(os.path.join(annotations_dir, f"{aug_name}.xml"), f"{aug_name}.jpg", aug_img.shape, aug_boxes)
+                            save_to_yolo_txt(os.path.join(labels_dir, f"{aug_name}.txt"), aug_img.shape, aug_boxes)
                             processed_count += 1
                     
                     # Báo cáo tiến độ (mỗi 5 file hoặc file cuối cùng)
