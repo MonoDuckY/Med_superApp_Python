@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaMa Caliper Removal Mockup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.7);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --success-color: #10b981;
+            --border-radius: 16px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+            border-radius: 9999px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .container {
+            width: 100%;
+            background: var(--surface-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+        }
+
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .upload-section:hover, .upload-section.dragover {
+            border-color: var(--accent-color);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-section input[type="file"] {
+            display: none;
+        }
+
+        .btn-upload {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn-upload:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .loader {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.1);
+            border-left-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .error { background: #ef4444; }
+
+        /* Visualization specific */
+        .visualization-panel {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .visualization-panel.active {
+            display: flex;
+        }
+
+        canvas {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 1rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>LaMa AI Assistant</h1>
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('singleTab')">Single Image Test</button>
+        <button class="tab-btn" onclick="switchTab('batchTab')">Batch Processing (.zip)</button>
+        <button class="tab-btn" onclick="switchTab('trainTab')" style="color: var(--accent-color); border: 1px solid var(--accent-color); display:flex; align-items:center;">Train AI 🚀</button>
+        <button class="tab-btn" onclick="switchTab('statusTab')">Job Status ⏳</button>
+    </div>
+
+    <!-- SINGLE IMAGE TEST TAB -->
+    <div id="singleTab" class="tab-content active">
+        <div class="container">
+            <h2 style="text-align:center; margin-top:0;">Single Image Analysis (LaMa)</h2>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Upload an image. The AI will remove calipers.</p>
+            
+            <div class="upload-section" id="singleDropZone">
+                <p>Drag and drop a <strong>.JPG / .PNG</strong> file here</p>
+                <button class="btn-upload" onclick="document.getElementById('singleFileInput').click()">Select Image</button>
+                <input type="file" id="singleFileInput" accept="image/*">
+            </div>
+
+            <div class="loader" id="singleLoader">
+                <div class="spinner"></div>
+                <p id="singleLoaderText" style="margin-top:1rem;">Processing...</p>
+            </div>
+
+            <div class="visualization-panel" id="visualizationPanel">
+                <canvas id="resultCanvas"></canvas>
+                <button class="btn-upload" onclick="resetSingleUI()">Test Another Image</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BATCH PROCESSING TAB -->
+    <div id="batchTab" class="tab-content">
+        <div class="container">
+            <h2 style="text-align:center; margin-top:0;">Batch Processing</h2>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Upload a ZIP to remove caliper markers in bulk.</p>
+            
+            <div class="upload-section" id="batchDropZone">
+                <p>Drag and drop a <strong>.ZIP</strong> file here</p>
+                <button class="btn-upload" onclick="document.getElementById('batchFileInput').click()">Select ZIP File</button>
+                <input type="file" id="batchFileInput" accept=".zip,application/zip">
+            </div>
+
+            <div class="loader" id="batchLoader">
+                <div class="spinner"></div>
+                <p style="margin-top:1rem;">Processing Batch with LaMa...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- TRAIN AI TAB -->
+    <div id="trainTab" class="tab-content">
+        <div class="container">
+            <h2 style="text-align:center; margin-top:0;">Train AI Model</h2>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Start a new training job directly from this mockup.</p>
+            
+            <div style="display:flex; flex-direction:column; gap: 1.5rem; max-width: 500px; margin: 0 auto;">
+                <div style="display:flex; flex-direction:column; gap: 0.5rem;">
+                    <label for="datasetFile" style="font-weight:600;">Dataset (.zip)</label>
+                    <input type="file" id="datasetFile" accept=".zip,application/zip" style="padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; font-size: 1rem; outline:none;">
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap: 0.5rem;">
+                    <label for="modelType" style="font-weight:600;">Model Type</label>
+                    <select id="modelType" style="padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; font-size: 1rem; outline:none;">
+                        <option value="yolov8_resnet">yolov8_resnet</option>
+                        <option value="yolov8_densenet">yolov8_densenet</option>
+                        <option value="yolov11_resnet">yolov11_resnet</option>
+                        <option value="yolov11_densenet">yolov11_densenet</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap: 0.5rem;">
+                    <label for="epochs" style="font-weight:600;">Epochs</label>
+                    <input type="number" id="epochs" value="50" min="1" max="1000" style="padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; font-size: 1rem; outline:none;">
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap: 0.5rem;">
+                    <label for="webhookUrl" style="font-weight:600;">Webhook URL (Optional)</label>
+                    <input type="text" id="webhookUrl" placeholder="https://..." style="padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; font-size: 1rem; outline:none;">
+                </div>
+
+                <button class="btn-upload" id="startTrainBtn" style="width: 100%; margin-top: 1rem; background: var(--accent-color);">Execute Training Request</button>
+            </div>
+
+            <div class="loader" id="trainLoader">
+                <div class="spinner"></div>
+                <p style="margin-top:1rem;">Sending Training Request...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JOB STATUS TAB -->
+    <div id="statusTab" class="tab-content">
+        <div class="container">
+            <h2 style="text-align:center; margin-top:0;">Job Status Tracking</h2>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Track the real-time progress of all AI training and preprocessing jobs.</p>
+            
+            <div style="display:flex; justify-content: flex-end; margin-bottom: 1rem;">
+                <button class="btn-upload" style="margin: 0;" onclick="fetchAllJobsStatus()">Refresh Now</button>
+            </div>
+            
+            <div id="jobsList" style="display:flex; flex-direction:column; gap: 1rem;">
+                <p style="text-align:center; color:var(--text-secondary);">No jobs found.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // --- TAB LOGIC ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // --- TOAST LOGIC ---
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show ' + (isError ? 'error' : '');
+            setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        // --- BATCH LOGIC ---
+        document.getElementById('batchFileInput').addEventListener('change', async function() {
+            if (this.files.length === 0) return;
+            const file = this.files[0];
+            if (!file.name.toLowerCase().endsWith('.zip')) return showToast("Please upload a .ZIP file", true);
+
+            document.getElementById('batchDropZone').style.display = 'none';
+            document.getElementById('batchLoader').style.display = 'flex';
+            const loaderText = document.querySelector('#batchLoader p');
+            loaderText.innerText = "Uploading ZIP...";
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                const res = await fetch('/api/inpaint', { method: 'POST', body: formData });
+                if (!res.ok) throw new Error("Upload failed");
+
+                const data = await res.json();
+                const jobId = data.job_id;
+                
+                // Start polling
+                const pollInterval = setInterval(async () => {
+                    try {
+                        const statusRes = await fetch(`/api/inpaint_status/${jobId}`);
+                        if (!statusRes.ok) throw new Error("Status check failed");
+                        const statusData = await statusRes.json();
+                        
+                        loaderText.innerText = statusData.progress;
+                        
+                        if (statusData.status === "completed") {
+                            clearInterval(pollInterval);
+                            showToast("Batch processing complete! Downloading...");
+                            
+                            // Trigger download
+                            window.location.href = `/api/inpaint_download/${jobId}`;
+                            
+                            // Reset UI
+                            document.getElementById('batchLoader').style.display = 'none';
+                            document.getElementById('batchDropZone').style.display = 'flex';
+                            this.value = '';
+                        } else if (statusData.status === "failed") {
+                            clearInterval(pollInterval);
+                            showToast("Batch processing failed: " + statusData.progress, true);
+                            document.getElementById('batchLoader').style.display = 'none';
+                            document.getElementById('batchDropZone').style.display = 'flex';
+                            this.value = '';
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }, 1000);
+
+            } catch (err) {
+                showToast(err.message, true);
+                document.getElementById('batchLoader').style.display = 'none';
+                document.getElementById('batchDropZone').style.display = 'flex';
+                this.value = '';
+            }
+        });
+
+        // --- SINGLE IMAGE LOGIC ---
+        const singleDropZone = document.getElementById('singleDropZone');
+        const singleFileInput = document.getElementById('singleFileInput');
+        const singleLoader = document.getElementById('singleLoader');
+        const singleLoaderText = document.getElementById('singleLoaderText');
+        const visualizationPanel = document.getElementById('visualizationPanel');
+        const canvas = document.getElementById('resultCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resetSingleUI() {
+            visualizationPanel.classList.remove('active');
+            singleDropZone.style.display = 'flex';
+            singleFileInput.value = '';
+        }
+
+        singleFileInput.addEventListener('change', async function() {
+            if (this.files.length === 0) return;
+            const file = this.files[0];
+
+            singleDropZone.style.display = 'none';
+            singleLoader.style.display = 'flex';
+            
+            try {
+                // STEP 1: Call LaMa
+                singleLoaderText.innerText = "Step 1: Removing Calipers (LaMa)...";
+                const formData = new FormData();
+                formData.append('file', file);
+                const lamaRes = await fetch('/api/inpaint_single', { method: 'POST', body: formData });
+                
+                if (!lamaRes.ok) throw new Error("LaMa processing failed");
+                const inpaintedBlob = await lamaRes.blob();
+
+                // Load image to canvas
+                const img = new Image();
+                img.src = URL.createObjectURL(inpaintedBlob);
+                await new Promise(r => img.onload = r);
+                
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+
+                // STEP 2: Call YOLO Detection (Port 8000)
+                singleLoaderText.innerText = "Step 2: AI Lesion Detection (YOLO)...";
+                const detectForm = new FormData();
+                detectForm.append('file', inpaintedBlob, "inpainted.jpg");
+                
+                const detectRes = await fetch('http://localhost:8000/api/detect', { method: 'POST', body: detectForm });
+                if (!detectRes.ok) throw new Error("YOLO detection failed");
+                
+                const detectData = await detectRes.json();
+
+                // Draw bounding boxes
+                if (detectData.detections) {
+                    detectData.detections.forEach(det => {
+                        const bbox = det.bbox;
+                        const x = bbox.xmin * canvas.width;
+                        const y = bbox.ymin * canvas.height;
+                        const w = (bbox.xmax - bbox.xmin) * canvas.width;
+                        const h = (bbox.ymax - bbox.ymin) * canvas.height;
+
+                        ctx.strokeStyle = '#10b981'; // Green
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(x, y, w, h);
+                        
+                        // Draw label
+                        ctx.fillStyle = '#10b981';
+                        ctx.font = '16px Arial';
+                        ctx.fillText(`Lesion: ${(det.confidence*100).toFixed(1)}%`, x, y - 5);
+                    });
+                }
+
+                singleLoader.style.display = 'none';
+                visualizationPanel.classList.add('active');
+                showToast("Analysis Complete!");
+
+            } catch (err) {
+                showToast(err.message, true);
+                resetSingleUI();
+            }
+        });
+
+        // --- TRAIN AI LOGIC ---
+        document.getElementById('startTrainBtn').addEventListener('click', async function() {
+            const datasetFileInput = document.getElementById('datasetFile');
+            if (datasetFileInput.files.length === 0) {
+                showToast("Vui lòng chọn file dataset (.zip)", true);
+                return;
+            }
+            const file = datasetFileInput.files[0];
+            
+            const modelType = document.getElementById('modelType').value;
+            const epochs = document.getElementById('epochs').value;
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            const btn = this;
+            const loader = document.getElementById('trainLoader');
+
+            btn.style.display = 'none';
+            loader.style.display = 'flex';
+
+            try {
+                // FastAPI expects multipart/form-data for File(...)
+                const formData = new FormData();
+                formData.append('dataset', file);
+                formData.append('model_type', modelType);
+                formData.append('epochs', epochs);
+                if (webhookUrl) {
+                    formData.append('webhook_url', webhookUrl);
+                }
+
+                const res = await fetch('http://localhost:8000/api/v1/ai/research/train-model', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    let errMsg = "Training request failed";
+                    try {
+                        const json = await res.json();
+                        errMsg = json.detail || json.message || errMsg;
+                    } catch(e) {}
+                    throw new Error(errMsg);
+                }
+
+                const data = await res.json();
+                showToast("Training started! Redirecting to Status Tab...");
+                
+                // Automatically switch to status tab and start polling
+                setTimeout(() => {
+                    switchTab('statusTab');
+                    startStatusPolling();
+                }, 1000);
+                
+            } catch (err) {
+                showToast(err.message, true);
+            } finally {
+                loader.style.display = 'none';
+                btn.style.display = 'block';
+            }
+        });
+
+        // --- JOB STATUS LOGIC ---
+        let pollingInterval = null;
+
+        async function fetchAllJobsStatus() {
+            try {
+                const res = await fetch(`http://localhost:8000/api/v1/ai/research/job-statuses`);
+                if (!res.ok) {
+                    throw new Error("Lỗi khi kiểm tra trạng thái các jobs.");
+                }
+
+                const json = await res.json();
+                const jobs = json.data; // Dictionary of job_id -> status object
+                const jobsListContainer = document.getElementById('jobsList');
+                
+                if (Object.keys(jobs).length === 0) {
+                    jobsListContainer.innerHTML = '<p style="text-align:center; color:var(--text-secondary);">No jobs found.</p>';
+                    return;
+                }
+
+                jobsListContainer.innerHTML = ''; // Clear current list
+
+                // Convert to array and sort (newest maybe? here we just iterate)
+                for (const [jobId, data] of Object.entries(jobs)) {
+                    const card = document.createElement('div');
+                    card.style.padding = '1.5rem';
+                    card.style.background = 'rgba(255,255,255,0.05)';
+                    card.style.border = '1px solid rgba(255,255,255,0.1)';
+                    card.style.borderRadius = '8px';
+
+                    let statusColor = 'var(--text-secondary)';
+                    if (data.status === 'completed') statusColor = 'var(--success-color)';
+                    else if (data.status === 'failed') statusColor = '#ef4444';
+                    else if (data.status === 'training' || data.status === 'evaluating') statusColor = 'var(--accent-color)';
+
+                    let metricsHtml = '';
+                    if (data.metrics) {
+                        metricsHtml = `<pre style="white-space: pre-wrap; font-size: 0.9rem; color: var(--success-color); margin-top:1rem; background:rgba(0,0,0,0.3); padding:1rem; border-radius:4px;">Evaluation Metrics:\n${JSON.stringify(data.metrics, null, 2)}</pre>`;
+                    }
+
+                    card.innerHTML = `
+                        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.8rem; color: var(--text-secondary); font-family: monospace;">ID: ${jobId}</span>
+                            <span style="font-size: 0.85rem; font-weight:600; padding: 0.25rem 0.75rem; border-radius: 12px; border: 1px solid ${statusColor}; color: ${statusColor}; text-transform: uppercase;">${data.status}</span>
+                        </div>
+                        <p style="color: var(--text-primary); font-weight: 600; margin: 0.5rem 0;">Progress: ${data.progress}</p>
+                        ${metricsHtml}
+                    `;
+                    jobsListContainer.appendChild(card);
+                }
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function startStatusPolling() {
+            if (pollingInterval) clearInterval(pollingInterval);
+            
+            // Check immediately once
+            fetchAllJobsStatus();
+            
+            // Then poll every 3 seconds
+            pollingInterval = setInterval(() => {
+                fetchAllJobsStatus();
+            }, 3000);
+        }
+        
+        // Fetch jobs when tab is manually clicked
+        document.querySelector('button[onclick="switchTab(\'statusTab\')"]').addEventListener('click', () => {
+            fetchAllJobsStatus();
+            startStatusPolling();
+        });
+    </script>
+</body>
+</html>
