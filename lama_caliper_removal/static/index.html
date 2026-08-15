@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaMa Caliper Removal Mockup (Batch Processing)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.7);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --success-color: #10b981;
+            --border-radius: 16px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        p.subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--surface-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .upload-section:hover, .upload-section.dragover {
+            border-color: var(--accent-color);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-section input[type="file"] {
+            display: none;
+        }
+
+        .btn-upload {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+            margin-top: 1rem;
+        }
+
+        .btn-upload:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.5);
+        }
+
+        .loader {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.1);
+            border-left-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .error {
+            background: #ef4444;
+        }
+
+        .success-box {
+            display: none;
+            text-align: center;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-box h3 {
+            color: var(--success-color);
+            margin-top: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>LaMa Batch Processing</h1>
+    <p class="subtitle">Upload a ZIP file containing ultrasound images to remove caliper markers</p>
+
+    <div class="container">
+        <div class="upload-section" id="dropZone">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary); margin-bottom: 1rem;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <p style="color: var(--text-secondary); font-size: 1.1rem; margin: 0;">Drag and drop a <strong>.ZIP</strong> file here</p>
+            <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-top: 0.5rem;">Can contain hundreds of images (e.g. 871 images)</p>
+            <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Select ZIP File</button>
+            <input type="file" id="fileInput" accept=".zip,application/zip">
+        </div>
+
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <p style="margin-top: 1.5rem; font-size: 1.2rem; font-weight: 600;">Processing Batch with LaMa...</p>
+            <p style="color: var(--text-secondary); margin-top: 0.5rem;">This may take a few minutes for a large dataset.</p>
+        </div>
+
+        <div class="success-box" id="successBox">
+            <h3>Processing Complete!</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Your images have been successfully inpainted.</p>
+            <button class="btn-upload" style="background: var(--success-color);" onclick="resetUI()">Upload Another ZIP</button>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast">Operation successful!</div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const loader = document.getElementById('loader');
+        const successBox = document.getElementById('successBox');
+        const toast = document.getElementById('toast');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+        });
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if(files.length > 0) {
+                uploadFile(files[0]);
+            }
+        }
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                uploadFile(this.files[0]);
+            }
+        });
+
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            if(isError) toast.classList.add('error');
+            else toast.classList.remove('error');
+            
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 5000);
+        }
+
+        function resetUI() {
+            successBox.style.display = 'none';
+            dropZone.style.display = 'flex';
+            fileInput.value = '';
+        }
+
+        async function uploadFile(file) {
+            if (!file.name.toLowerCase().endsWith('.zip')) {
+                showToast("Please upload a .ZIP file.", true);
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            dropZone.style.display = 'none';
+            successBox.style.display = 'none';
+            loader.style.display = 'flex';
+
+            try {
+                const response = await fetch('/api/inpaint', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    let errorMessage = "An error occurred during processing.";
+                    try {
+                        const errorJson = await response.json();
+                        errorMessage = errorJson.detail || errorMessage;
+                    } catch(e) {}
+                    throw new Error(errorMessage);
+                }
+
+                // The response is a ZIP file, so we need to download it as a Blob
+                const blob = await response.blob();
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = "processed_images.zip";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(downloadUrl);
+
+                loader.style.display = 'none';
+                successBox.style.display = 'block';
+                showToast("Batch processing complete! Downloading results...");
+            } catch (error) {
+                console.error(error);
+                loader.style.display = 'none';
+                dropZone.style.display = 'flex';
+                showToast(error.message, true);
+            }
+        }
+    </script>
+</body>
+</html>
