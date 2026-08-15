@@ -3,7 +3,7 @@ import numpy as np
 import base64
 from typing import Dict, Any
 
-from .preprocess import detect_safe_area, remove_text_and_callipers, detect_calipers, remove_calipers_preserve_texture
+from .preprocess import detect_safe_area, remove_text_and_callipers, detect_calipers, remove_calipers_preserve_texture, remove_calipers_with_gemini
 import os
 
 # Thư mục chứa template caliper tĩnh (nằm cùng cấp với pipeline.py)
@@ -19,10 +19,15 @@ class MedSAM_InferenceModel:
 # Khởi tạo model ở cấp độ module (Singleton pattern) để tái sử dụng
 medsam_model = MedSAM_InferenceModel()
 
-def run_ultrasound_pipeline(image_bytes: bytes, patient_id: str = "Unknown") -> Dict[str, Any]:
+def run_ultrasound_pipeline(
+    image_bytes: bytes, 
+    patient_id: str = "Unknown",
+    use_gemini: bool = True,
+    gemini_api_key: str = None
+) -> Dict[str, Any]:
     """
     Chạy toàn bộ pipeline xử lý ảnh siêu âm từ đầu đến cuối.
-    1. Preprocess (Safe Area + Text Removal)
+    1. Preprocess (Safe Area + Caliper Removal + Text Removal)
     2. Enhance (SRAD)
     3. Segment (MedSAM)
     4. Format Output JSON
@@ -37,12 +42,16 @@ def run_ultrasound_pipeline(image_bytes: bytes, patient_id: str = "Unknown") -> 
     # Bước 1: Tiền xử lý
     image, bbox = detect_safe_area(image)
     
-    # Xóa caliper trước (sử dụng template matching và thuật toán giữ nguyên texture/cấu trúc/màu sắc)
-    caliper_mask, _ = detect_calipers(image, TEMPLATES_DIR)
-    image = remove_calipers_preserve_texture(image, caliper_mask)
+    # Xóa caliper bằng LLM Gemini hoặc fallback bảo toàn cấu trúc/nhiễu hạt/màu sắc
+    if use_gemini:
+        image, caliper_mask, detected_boxes, caliper_meta = remove_calipers_with_gemini(image, api_key=gemini_api_key)
+    else:
+        caliper_mask, detected_boxes = detect_calipers(image, TEMPLATES_DIR)
+        image = remove_calipers_preserve_texture(image, caliper_mask)
     
     # Xóa text bằng OCR
     image = remove_text_and_callipers(image)
+
 
     # Bước 2: Tăng cường chất lượng
     image = apply_srad(image, n_iter=10)
@@ -165,17 +174,23 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
                         n_iter = options.get("srad_iterations", 10)
                         image = apply_srad(image, n_iter=n_iter)
                         
-                    # 2. Phát hiện Caliper và Trích xuất XML
-                    caliper_mask, boxes = detect_calipers(image, TEMPLATES_DIR)
+                    # 2. Phát hiện Caliper và Xóa (với tùy chọn Gemini LLM hoặc Local)
+                    use_gemini = options.get("use_gemini", True)
+                    gemini_key = options.get("gemini_api_key", None)
                     
-                    # 3. Xóa Caliper & Chữ trên ảnh gốc (nếu được yêu cầu)
                     if options.get("enable_text_removal", False):
-                        # Xóa caliper giữ nguyên texture, cấu trúc và màu sắc ảnh siêu âm
-                        image = remove_calipers_preserve_texture(image, caliper_mask)
+                        if use_gemini:
+                            image, caliper_mask, boxes, _ = remove_calipers_with_gemini(image, api_key=gemini_key)
+                        else:
+                            caliper_mask, boxes = detect_calipers(image, TEMPLATES_DIR)
+                            image = remove_calipers_preserve_texture(image, caliper_mask)
                         # Dùng OCR để xóa các chữ viết khác
                         image = remove_text_and_callipers(image)
+                    else:
+                        caliper_mask, boxes = detect_calipers(image, TEMPLATES_DIR)
                         
                     # 4. Lưu ảnh gốc đã xử lý và file XML của nó
+
                     base_name = os.path.splitext(file_name)[0]
                     cv2.imwrite(os.path.join(images_dir, f"{base_name}.jpg"), image)
                     save_to_combined_xml(os.path.join(annotations_dir, f"{base_name}.xml"), f"{base_name}.jpg", image.shape, boxes)

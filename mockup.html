@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultrasound AI Pipeline Mockup</title>
+    <title>Ultrasound AI - Gemini Caliper Remover & Pipeline Mockup</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -13,6 +13,8 @@
             --accent-hover: #2563eb;
             --border-color: #334155;
             --success-color: #10b981;
+            --gemini-color: #8b5cf6;
+            --gemini-hover: #7c3aed;
         }
 
         body {
@@ -29,61 +31,135 @@
 
         header {
             width: 100%;
-            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            background: linear-gradient(90deg, #1e3a8a, #8b5cf6, #3b82f6);
             padding: 2rem 0;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         header h1 {
             margin: 0;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            letter-spacing: -0.025em;
         }
 
         header p {
             margin: 0.5rem 0 0;
             color: #e0e7ff;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
-        main {
+        .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1280px;
             padding: 2rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .tab-btn.active.gemini-tab {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            border-color: var(--gemini-color);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .config-box {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .config-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .config-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .config-input {
+            flex: 1;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            color: #fff;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .grid-layout {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 2rem;
-            box-sizing: border-box;
+            gap: 1.5rem;
         }
 
         @media (min-width: 900px) {
-            main {
+            .grid-layout.two-col {
                 grid-template-columns: 1fr 1fr;
+            }
+            .grid-layout.three-col {
+                grid-template-columns: 1fr 1fr 1fr;
             }
         }
 
         .panel {
             background-color: var(--panel-bg);
             border-radius: 1rem;
-            padding: 2rem;
+            padding: 1.5rem;
             border: 1px solid var(--border-color);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1rem;
         }
 
         .panel h2 {
             margin: 0;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: space-between;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
+            padding-bottom: 0.75rem;
         }
 
         .upload-area {
@@ -101,67 +177,47 @@
             background-color: rgba(59, 130, 246, 0.05);
         }
 
-        .upload-area input[type="file"] {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .upload-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .upload-text {
-            color: #94a3b8;
-            font-size: 0.95rem;
-        }
-
-        .image-preview-container {
+        .preview-box {
+            position: relative;
             width: 100%;
             aspect-ratio: 4/3;
-            background-color: #000;
+            background-color: #0f172a;
             border-radius: 0.5rem;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 1px solid var(--border-color);
-            position: relative;
         }
 
-        .image-preview {
+        .preview-box img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
             display: none;
         }
 
-        .image-preview.active {
+        .preview-box img.active {
             display: block;
         }
 
         .placeholder-text {
             color: #64748b;
             font-size: 0.9rem;
+            text-align: center;
+            padding: 1rem;
         }
 
         .btn {
-            background-color: var(--accent-color);
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
             color: white;
             border: none;
-            padding: 1rem;
+            padding: 0.85rem 1.5rem;
             border-radius: 0.5rem;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            width: 100%;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -169,212 +225,366 @@
         }
 
         .btn:hover {
-            background-color: var(--accent-hover);
-        }
-
-        .btn:active {
-            transform: scale(0.98);
+            filter: brightness(1.15);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
         }
 
         .btn:disabled {
-            background-color: #475569;
+            background: #475569;
             cursor: not-allowed;
-            transform: none;
+            filter: none;
+            box-shadow: none;
         }
 
-        /* Loading spinner */
-        .spinner {
-            width: 1.5rem;
-            height: 1.5rem;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            display: none;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .btn.loading .spinner {
-            display: block;
-        }
-        
-        .btn.loading .btn-text {
-            display: none;
-        }
-
-        .status-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background-color: var(--success-color);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 999px;
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
             font-size: 0.75rem;
-            font-weight: 600;
-            display: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-weight: 700;
         }
 
+        .badge-success { background-color: rgba(16, 185, 129, 0.2); color: var(--success-color); }
+        .badge-gemini { background-color: rgba(139, 92, 246, 0.2); color: #c084fc; }
+
+        .metrics-card {
+            background-color: #0f172a;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .metric-title {
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+
+        .metric-val {
+            font-weight: 700;
+            color: #38bdf8;
+        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
     <header>
-        <h1>Med_superApp AI</h1>
-        <p>Ultrasound Processing Pipeline Mockup</p>
+        <h1>Medical AI Ultrasound Studio</h1>
+        <p>Phát hiện & Xóa Caliper Bằng LLM Gemini • Bảo Toàn Cấu Trúc, Texture & Nhiễu Hạt Siêu Âm</p>
     </header>
 
-    <main>
-        <!-- Input Panel -->
+    <div class="container">
+        <!-- Mode Tabs -->
+        <div class="mode-tabs">
+            <button class="tab-btn active gemini-tab" id="tabGemini">✨ Gemini Caliper Remover (Chuyên Sâu)</button>
+            <button class="tab-btn" id="tabPipeline">🔬 Full AI Pipeline (SRAD + MedSAM)</button>
+        </div>
+
+        <!-- Configuration Bar -->
+        <div class="config-box">
+            <div class="config-group">
+                <label for="apiKeyInput">Gemini API Key (Bắt buộc):</label>
+                <input type="password" id="apiKeyInput" class="config-input" placeholder="Dán Gemini API Key (lấy tại aistudio.google.com)">
+            </div>
+            <div class="config-group" style="flex: 0 1 260px; min-width: 220px;">
+                <label for="modelSelect">Model:</label>
+                <select id="modelSelect" class="config-input" style="cursor: pointer;">
+                    <option value="gemini-2.5-pro" selected>Gemini 2.5 Pro (Mạnh nhất - Pro)</option>
+                    <option value="gemini-2.5-flash">Gemini 2.5 Flash (Nhanh & Chuẩn)</option>
+                    <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                    <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                    <option value="gemini-3.1-pro">Gemini 3.1 Pro (Auto Fallback)</option>
+                </select>
+            </div>
+            <div>
+                <span class="badge badge-gemini" id="engineBadge">Google Gemini 2.5 Pro Multimodal</span>
+            </div>
+        </div>
+
+
+
+        <!-- Prompt Template Viewer -->
+        <div class="panel" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="document.getElementById('promptBox').style.display = document.getElementById('promptBox').style.display === 'none' ? 'block' : 'none';">
+                <span style="font-weight: 600; font-size: 0.95rem; color: #a78bfa; display: flex; align-items: center; gap: 0.5rem;">
+                    📝 Prompt Mẫu Gửi Gemini LLM Cho Mỗi Lần Chạy (Click để xem / sửa)
+                </span>
+                <span style="font-size: 0.8rem; color: #94a3b8;">[Ẩn / Hiện]</span>
+            </div>
+            <div id="promptBox" style="margin-top: 0.75rem; display: block;">
+                <textarea id="promptInput" style="width: 100%; height: 110px; background-color: #0f172a; border: 1px solid var(--border-color); border-radius: 0.5rem; color: #e2e8f0; font-family: monospace; font-size: 0.85rem; padding: 0.75rem; box-sizing: border-box; resize: vertical;">- Xóa các caliper trong ảnh, giữ nguyên cấu trúc phía bên trong caliper  
+- giữ lại toàn bộ cấu trúc của các vùng khác, không chỉnh sửa bất cứ điều gì ở các vùng khác
+- giữ nguyên đặc trưng nhiễu hạt của ảnh siêu âm, nhớ rằng giữ nguyên màu sắc, cũng như các cấu trúc khác của các vùng nằm trog các caliper. 
+- Giữ nguyên các texture  bên trong các caliper ( không được tự động ngả màu rgb giữ nguyên màu của ảnh siêu âm))</textarea>
+                <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">Lưu cố định tại: <code>core_pipeline/prompts.py</code> và tự động truyền cho mỗi request.</div>
+            </div>
+        </div>
+
+
+        <!-- Upload & Action Area -->
         <div class="panel">
-            <h2>📤 Input</h2>
-            
             <div class="upload-area" id="uploadArea">
-                <input type="file" id="fileInput" accept="image/*">
-                <span class="upload-icon">📸</span>
-                <div class="upload-text">
-                    <strong>Click to upload</strong> or drag and drop<br>
-                    PNG, JPG or JPEG (Max 16MB)
-                </div>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.5rem;">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <p style="margin: 0; font-weight: 500;">Kéo & Thả hoặc Bấm vào đây để chọn ảnh siêu âm (JPG, PNG)</p>
             </div>
-
-            <div class="image-preview-container">
-                <span class="placeholder-text" id="inputPlaceholder">No image selected</span>
-                <img id="inputPreview" class="image-preview" alt="Input Preview">
-            </div>
-
             <button class="btn" id="processBtn" disabled>
-                <span class="btn-text">Run Pipeline</span>
-                <div class="spinner"></div>
+                <span>⚡ Bắt Đầu Xóa Caliper Bằng Gemini</span>
             </button>
         </div>
 
-        <!-- Output Panel -->
-        <div class="panel">
-            <h2>✨ Output</h2>
-            
-            <div class="image-preview-container">
-                <span class="placeholder-text" id="outputPlaceholder">Result will appear here</span>
-                <img id="outputPreview" class="image-preview" alt="Output Preview">
-                <div class="status-badge" id="successBadge">Success</div>
+        <!-- Metrics Dashboard -->
+        <div class="metrics-card" id="metricsCard" style="display: none;">
+            <div class="metric-item">
+                <span class="metric-title">Số Caliper Phát Hiện</span>
+                <span class="metric-val" id="metricCount">-</span>
             </div>
-            
-            <div style="color: #94a3b8; font-size: 0.9rem; line-height: 1.5; background: #0f172a; padding: 1rem; border-radius: 0.5rem; border: 1px solid #334155;">
-                <strong>Pipeline Steps:</strong><br>
-                1. Detect & Crop Safe Area<br>
-                2. Detect & Remove Calipers (Preserve Texture & Color)<br>
-                3. Remove Text (OCR)<br>
-                4. SRAD Enhancement<br>
-                5. MedSAM Segmentation
+            <div class="metric-item">
+                <span class="metric-title">Mức Nhiễu Hạt (Noise σ)</span>
+                <span class="metric-val" id="metricNoise">-</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-title">Chuẩn Màu Đơn Sắc (RGB)</span>
+                <span class="metric-val" id="metricMonochrome">Đã Ép Chuẩn (R=G=B)</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-title">Sai Số Vùng Ngoài (MSE)</span>
+                <span class="metric-val" id="metricMse">0.00 (Giữ Nguyên 100%)</span>
             </div>
         </div>
-    </main>
+
+        <!-- Visual Comparison Panels -->
+        <div class="grid-layout three-col" id="geminiView">
+            <div class="panel">
+                <h2>1. Ảnh Gốc Có Caliper</h2>
+                <div class="preview-box">
+                    <img id="origImg" alt="Ảnh Gốc">
+                    <div class="placeholder-text" id="origPlaceholder">Chưa có ảnh</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>2. Sub-pixel Caliper Mask</h2>
+                <div class="preview-box">
+                    <img id="maskImg" alt="Caliper Mask">
+                    <div class="placeholder-text" id="maskPlaceholder">Mask phát hiện nét vẽ</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>
+                    3. Kết Quả Hoàn Hảo
+                    <span class="badge badge-success" id="successBadge" style="display: none;">ĐÃ BẢO TOÀN TEXTURE</span>
+                </h2>
+                <div class="preview-box">
+                    <img id="resultImg" alt="Ảnh Kết Quả">
+                    <div class="placeholder-text" id="resultPlaceholder">Kết quả sau xử lý</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         const fileInput = document.getElementById('fileInput');
         const uploadArea = document.getElementById('uploadArea');
-        const inputPreview = document.getElementById('inputPreview');
-        const inputPlaceholder = document.getElementById('inputPlaceholder');
         const processBtn = document.getElementById('processBtn');
-        const outputPreview = document.getElementById('outputPreview');
-        const outputPlaceholder = document.getElementById('outputPlaceholder');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const origImg = document.getElementById('origImg');
+        const maskImg = document.getElementById('maskImg');
+        const resultImg = document.getElementById('resultImg');
+        const origPlaceholder = document.getElementById('origPlaceholder');
+        const maskPlaceholder = document.getElementById('maskPlaceholder');
+        const resultPlaceholder = document.getElementById('resultPlaceholder');
+        const metricsCard = document.getElementById('metricsCard');
         const successBadge = document.getElementById('successBadge');
 
+        const tabGemini = document.getElementById('tabGemini');
+        const tabPipeline = document.getElementById('tabPipeline');
+        let currentMode = 'gemini'; // 'gemini' or 'pipeline'
         let selectedFile = null;
 
-        // Handle File Selection
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-                handleFile(e.target.files[0]);
-            }
+        // Restore saved API Key if any
+        if (localStorage.getItem('gemini_api_key')) {
+            apiKeyInput.value = localStorage.getItem('gemini_api_key');
+        }
+        apiKeyInput.addEventListener('input', () => {
+            localStorage.setItem('gemini_api_key', apiKeyInput.value.trim());
         });
 
-        // Drag and drop styles
+        const modelSelect = document.getElementById('modelSelect');
+        const engineBadge = document.getElementById('engineBadge');
+        if (modelSelect) {
+            modelSelect.addEventListener('change', () => {
+                const selectedText = modelSelect.options[modelSelect.selectedIndex].text;
+                engineBadge.textContent = 'Google ' + selectedText + ' Multimodal';
+            });
+        }
+
+        // Tab Switching
+        tabGemini.addEventListener('click', () => {
+            currentMode = 'gemini';
+            tabGemini.classList.add('active', 'gemini-tab');
+            tabPipeline.classList.remove('active');
+            processBtn.innerHTML = '<span>⚡ Bắt Đầu Xóa Caliper Bằng Gemini 3.1 Pro</span>';
+        });
+
+
+        tabPipeline.addEventListener('click', () => {
+            currentMode = 'pipeline';
+            tabPipeline.classList.add('active');
+            tabGemini.classList.remove('active', 'gemini-tab');
+            processBtn.innerHTML = '<span>🔬 Chạy Toàn Bộ AI Pipeline</span>';
+        });
+
+        // Upload Trigger
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFile(e.target.files[0]);
+        });
+
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadArea.classList.add('dragover');
         });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
-            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                handleFile(e.dataTransfer.files[0]);
-            }
+            if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
         });
 
         function handleFile(file) {
             if (!file.type.startsWith('image/')) {
-                alert('Please upload an image file.');
+                alert('Vui lòng chọn file hình ảnh.');
                 return;
             }
             selectedFile = file;
-            
-            // Show preview
             const reader = new FileReader();
             reader.onload = (e) => {
-                inputPreview.src = e.target.result;
-                inputPreview.classList.add('active');
-                inputPlaceholder.style.display = 'none';
-                processBtn.disabled = false;
-                
-                // Reset output
-                outputPreview.classList.remove('active');
-                outputPlaceholder.style.display = 'block';
+                origImg.src = e.target.result;
+                origImg.classList.add('active');
+                origPlaceholder.style.display = 'none';
+
+                maskImg.classList.remove('active');
+                maskPlaceholder.style.display = 'block';
+                resultImg.classList.remove('active');
+                resultPlaceholder.style.display = 'block';
+                metricsCard.style.display = 'none';
                 successBadge.style.display = 'none';
+
+                processBtn.disabled = false;
             };
             reader.readAsDataURL(file);
         }
 
-        // Handle Processing
+        // Process Action
         processBtn.addEventListener('click', async () => {
             if (!selectedFile) return;
 
-            // UI State loading
-            processBtn.classList.add('loading');
+            const apiKey = apiKeyInput.value.trim();
+            if (currentMode === 'gemini' && !apiKey) {
+                const userKey = prompt("Vui lòng nhập Gemini API Key để gọi LLM Gemini (Lấy miễn phí tại https://aistudio.google.com/app/apikey):");
+                if (userKey && userKey.trim()) {
+                    apiKeyInput.value = userKey.trim();
+                    localStorage.setItem('gemini_api_key', userKey.trim());
+                } else {
+                    alert("Cần có Gemini API Key để thực thi bằng LLM Gemini API!");
+                    return;
+                }
+            }
+
             processBtn.disabled = true;
-            outputPreview.classList.remove('active');
-            outputPlaceholder.style.display = 'block';
-            outputPlaceholder.textContent = 'Processing...';
-            successBadge.style.display = 'none';
+            processBtn.innerHTML = '<span>⏳ Đang phân tích và xử lý bằng LLM Gemini API...</span>';
+            resultPlaceholder.textContent = 'Đang gọi LLM Gemini API...';
 
             const formData = new FormData();
             formData.append('file', selectedFile);
-            formData.append('patient_id', 'MockupPatient123');
+            const finalKey = apiKeyInput.value.trim();
+            if (finalKey) {
+                formData.append('api_key', finalKey);
+            }
+            const modelSelect = document.getElementById('modelSelect');
+            if (modelSelect && modelSelect.value) {
+                formData.append('model', modelSelect.value);
+            }
+            const promptInputElem = document.getElementById('promptInput');
+            if (promptInputElem && promptInputElem.value.trim()) {
+                formData.append('prompt', promptInputElem.value.trim());
+            }
+
+
+
 
             try {
-                const response = await fetch('/api/v1/ai/analyze-ultrasound', {
+                let endpoint = currentMode === 'gemini' 
+                    ? '/api/v1/ai/remove-calipers-gemini' 
+                    : '/api/v1/ai/analyze-ultrasound';
+
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     body: formData
                 });
 
-                const data = await response.json();
+                let resJson;
+                const responseText = await response.text();
+                try {
+                    resJson = JSON.parse(responseText);
+                } catch (parseErr) {
+                    alert('Lỗi Server (' + response.status + '): ' + responseText.substring(0, 300));
+                    resultPlaceholder.textContent = 'Lỗi Server: ' + response.status;
+                    return;
+                }
 
-                if (data.success) {
-                    outputPreview.src = data.data.image.processed_image_base64;
-                    outputPreview.classList.add('active');
-                    outputPlaceholder.style.display = 'none';
-                    successBadge.style.display = 'block';
+                if (resJson.success) {
+                    if (currentMode === 'gemini') {
+                        const data = resJson.data;
+                        resultImg.src = data.processed_image_base64;
+                        resultImg.classList.add('active');
+                        resultPlaceholder.style.display = 'none';
+
+                        maskImg.src = data.caliper_mask_base64;
+                        maskImg.classList.add('active');
+                        maskPlaceholder.style.display = 'none';
+
+                        // Display metrics
+                        document.getElementById('metricCount').textContent = data.metrics.calipers_count || '0';
+                        document.getElementById('metricNoise').textContent = (data.metrics.noise_std_estimated || 0) + ' σ';
+                        document.getElementById('metricMonochrome').textContent = data.metrics.is_monochrome_enforced ? 'Đã Ép Chuẩn (R=G=B)' : 'Doppler Color';
+                        document.getElementById('metricMse').textContent = (data.metrics.background_difference_mse || 0).toFixed(2) + ' (Giữ Nguyên 100%)';
+                        metricsCard.style.display = 'grid';
+                        successBadge.style.display = 'inline-block';
+                    } else {
+                        const data = resJson.data;
+                        resultImg.src = data.image.processed_image_base64;
+                        resultImg.classList.add('active');
+                        resultPlaceholder.style.display = 'none';
+                        successBadge.style.display = 'inline-block';
+                    }
                 } else {
-                    alert('Error: ' + data.message);
-                    outputPlaceholder.textContent = 'Failed to process image.';
+                    alert('Lỗi: ' + resJson.message);
+                    resultPlaceholder.textContent = 'Xử lý thất bại: ' + resJson.message;
                 }
             } catch (err) {
-                alert('Network Error: ' + err.message);
-                outputPlaceholder.textContent = 'Network Error.';
+                alert('Lỗi kết nối mạng: ' + err.message);
+                resultPlaceholder.textContent = 'Lỗi kết nối.';
             } finally {
-                // UI State restore
-                processBtn.classList.remove('loading');
+
                 processBtn.disabled = false;
+                processBtn.innerHTML = currentMode === 'gemini'
+                    ? '<span>⚡ Bắt Đầu Xóa Caliper Bằng Gemini</span>'
+                    : '<span>🔬 Chạy Toàn Bộ AI Pipeline</span>';
             }
         });
     </script>

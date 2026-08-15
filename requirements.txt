@@ -9,3 +9,5 @@ torch
 torchvision
 scikit-image
 requests
+google-genai
+python-dotenv

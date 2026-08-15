@@ -190,3 +190,20 @@ def remove_calipers_preserve_texture(image: np.ndarray, mask: np.ndarray) -> np.
     final_image = np.where(dilated_mask[:, :, None] > 0, result, image)
     
     return final_image
+
+from .gemini_caliper_remover import gemini_caliper_remover, GeminiUltrasoundCaliperRemover
+
+def remove_calipers_with_gemini(
+    image: np.ndarray, 
+    api_key: str = None,
+    prompt: str = None
+) -> tuple[np.ndarray, np.ndarray, list[dict], dict]:
+    """
+    Hàm tiện ích xóa Caliper bằng Gemini LLM:
+    - Sử dụng prompt mẫu chuẩn hoặc prompt tùy chỉnh
+    - Giữ nguyên 100% cấu trúc, texture, hạt siêu âm bên trong & ngoài caliper
+    - Chống ngả màu RGB
+    """
+    return gemini_caliper_remover.remove_calipers_with_gemini(image, custom_api_key=api_key, custom_prompt=prompt)
+
+
