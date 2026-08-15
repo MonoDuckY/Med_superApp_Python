@@ -1,5 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, Form, BackgroundTasks, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 
@@ -24,6 +24,16 @@ app.add_middleware(
 @app.get("/health")
 def health_check():
     return {"status": "UP", "message": "Python AI Service is ready!"}
+
+@app.get("/mockup", response_class=HTMLResponse)
+async def get_mockup():
+    """
+    Giao diện mockup để upload và test trực tiếp AI Pipeline.
+    """
+    import os
+    file_path = os.path.join(os.path.dirname(__file__), "mockup.html")
+    with open(file_path, "r", encoding="utf-8") as f:
+        return f.read()
 
 @app.post("/api/v1/ai/analyze-ultrasound")
 async def analyze_ultrasound(

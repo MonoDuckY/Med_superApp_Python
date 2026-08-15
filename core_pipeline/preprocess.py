@@ -145,3 +145,48 @@ def detect_calipers(image: np.ndarray, templates_dir: str, threshold: float = 0.
             boxes.append({'name': class_name, 'xmin': xmin, 'ymin': ymin, 'xmax': xmax, 'ymax': ymax})
             
     return mask, boxes
+
+def remove_calipers_preserve_texture(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
+    """
+    Xóa caliper dựa trên mask, nhưng giữ nguyên cấu trúc phía bên trong caliper,
+    giữ lại toàn bộ cấu trúc của các vùng khác, giữ nguyên đặc trưng nhiễu hạt (speckle noise).
+    Giữ nguyên các texture bên trong các caliper và không được tự động ngả màu rgb.
+    """
+    if not np.any(mask):
+        return image
+        
+    # Bước 1: Dilate mask để đảm bảo bao phủ hoàn toàn viền màu của caliper,
+    # tránh tình trạng color bleeding (lem màu rgb của caliper vào trong vùng inpaint).
+    kernel = np.ones((3, 3), np.uint8)
+    dilated_mask = cv2.dilate(mask, kernel, iterations=2)
+    
+    # Bước 2: Inpaint để nội suy cấu trúc (structure) làm nền phía bên trong caliper.
+    # Telea algorithm giúp giữ cấu trúc khá tốt.
+    inpainted = cv2.inpaint(image, dilated_mask, 3, cv2.INPAINT_TELEA)
+    
+    # Bước 3: Lấy độ lệch chuẩn (mức độ nhiễu) từ vùng cấu trúc xung quanh caliper.
+    ring_mask = cv2.dilate(dilated_mask, kernel, iterations=5) - dilated_mask
+    
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    if np.any(ring_mask):
+        mean_val, std_val = cv2.meanStdDev(gray_image, mask=ring_mask)
+        noise_std = std_val[0][0]
+    else:
+        noise_std = 5.0
+        
+    # Bước 4: Tạo nhiễu đơn sắc (monochromatic noise) để giữ nguyên texture
+    # Nhiễu đơn sắc khi cộng vào 3 kênh sẽ không làm thay đổi hay ngả màu RGB của ảnh gốc.
+    noise = np.random.normal(0, noise_std, gray_image.shape)
+    
+    # Bước 5: Thêm nhiễu vào vùng inpaint (cộng nhiễu cho cả 3 kênh như nhau)
+    result = inpainted.astype(np.float32)
+    for c in range(3):
+        result[:, :, c] += noise
+        
+    result = np.clip(result, 0, 255).astype(np.uint8)
+    
+    # Bước 6: Ghép vùng đã xóa caliper vào ảnh gốc
+    # np.where giúp đảm bảo giữ lại toàn bộ cấu trúc của các vùng khác, không chỉnh sửa bất cứ điều gì
+    final_image = np.where(dilated_mask[:, :, None] > 0, result, image)
+    
+    return final_image

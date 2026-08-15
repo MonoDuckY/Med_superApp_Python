@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultrasound AI Pipeline Mockup</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --text-color: #f8fafc;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --border-color: #334155;
+            --success-color: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        header p {
+            margin: 0.5rem 0 0;
+            color: #e0e7ff;
+            font-size: 1.1rem;
+        }
+
+        main {
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            box-sizing: border-box;
+        }
+
+        @media (min-width: 900px) {
+            main {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--panel-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .panel h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--accent-color);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-area input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .upload-text {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .image-preview-container {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background-color: #000;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .image-preview.active {
+            display: block;
+        }
+
+        .placeholder-text {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn.loading .spinner {
+            display: block;
+        }
+        
+        .btn.loading .btn-text {
+            display: none;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>Med_superApp AI</h1>
+        <p>Ultrasound Processing Pipeline Mockup</p>
+    </header>
+
+    <main>
+        <!-- Input Panel -->
+        <div class="panel">
+            <h2>📤 Input</h2>
+            
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="fileInput" accept="image/*">
+                <span class="upload-icon">📸</span>
+                <div class="upload-text">
+                    <strong>Click to upload</strong> or drag and drop<br>
+                    PNG, JPG or JPEG (Max 16MB)
+                </div>
+            </div>
+
+            <div class="image-preview-container">
+                <span class="placeholder-text" id="inputPlaceholder">No image selected</span>
+                <img id="inputPreview" class="image-preview" alt="Input Preview">
+            </div>
+
+            <button class="btn" id="processBtn" disabled>
+                <span class="btn-text">Run Pipeline</span>
+                <div class="spinner"></div>
+            </button>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="panel">
+            <h2>✨ Output</h2>
+            
+            <div class="image-preview-container">
+                <span class="placeholder-text" id="outputPlaceholder">Result will appear here</span>
+                <img id="outputPreview" class="image-preview" alt="Output Preview">
+                <div class="status-badge" id="successBadge">Success</div>
+            </div>
+            
+            <div style="color: #94a3b8; font-size: 0.9rem; line-height: 1.5; background: #0f172a; padding: 1rem; border-radius: 0.5rem; border: 1px solid #334155;">
+                <strong>Pipeline Steps:</strong><br>
+                1. Detect & Crop Safe Area<br>
+                2. Detect & Remove Calipers (Preserve Texture & Color)<br>
+                3. Remove Text (OCR)<br>
+                4. SRAD Enhancement<br>
+                5. MedSAM Segmentation
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const inputPreview = document.getElementById('inputPreview');
+        const inputPlaceholder = document.getElementById('inputPlaceholder');
+        const processBtn = document.getElementById('processBtn');
+        const outputPreview = document.getElementById('outputPreview');
+        const outputPlaceholder = document.getElementById('outputPlaceholder');
+        const successBadge = document.getElementById('successBadge');
+
+        let selectedFile = null;
+
+        // Handle File Selection
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Drag and drop styles
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file.');
+                return;
+            }
+            selectedFile = file;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                inputPreview.src = e.target.result;
+                inputPreview.classList.add('active');
+                inputPlaceholder.style.display = 'none';
+                processBtn.disabled = false;
+                
+                // Reset output
+                outputPreview.classList.remove('active');
+                outputPlaceholder.style.display = 'block';
+                successBadge.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Handle Processing
+        processBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            // UI State loading
+            processBtn.classList.add('loading');
+            processBtn.disabled = true;
+            outputPreview.classList.remove('active');
+            outputPlaceholder.style.display = 'block';
+            outputPlaceholder.textContent = 'Processing...';
+            successBadge.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('patient_id', 'MockupPatient123');
+
+            try {
+                const response = await fetch('/api/v1/ai/analyze-ultrasound', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    outputPreview.src = data.data.image.processed_image_base64;
+                    outputPreview.classList.add('active');
+                    outputPlaceholder.style.display = 'none';
+                    successBadge.style.display = 'block';
+                } else {
+                    alert('Error: ' + data.message);
+                    outputPlaceholder.textContent = 'Failed to process image.';
+                }
+            } catch (err) {
+                alert('Network Error: ' + err.message);
+                outputPlaceholder.textContent = 'Network Error.';
+            } finally {
+                // UI State restore
+                processBtn.classList.remove('loading');
+                processBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -3,7 +3,12 @@ import numpy as np
 import base64
 from typing import Dict, Any
 
-from .preprocess import detect_safe_area, remove_text_and_callipers
+from .preprocess import detect_safe_area, remove_text_and_callipers, detect_calipers, remove_calipers_preserve_texture
+import os
+
+# Thư mục chứa template caliper tĩnh (nằm cùng cấp với pipeline.py)
+TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "templates")
+
 from .enhance import apply_srad
 # Tạm thời comment phần import AI model vì theo kế hoạch sẽ train AI sau
 # from .segment import MedSAM_InferenceModel
@@ -31,6 +36,12 @@ def run_ultrasound_pipeline(image_bytes: bytes, patient_id: str = "Unknown") -> 
 
     # Bước 1: Tiền xử lý
     image, bbox = detect_safe_area(image)
+    
+    # Xóa caliper trước (sử dụng template matching và thuật toán giữ nguyên texture/cấu trúc/màu sắc)
+    caliper_mask, _ = detect_calipers(image, TEMPLATES_DIR)
+    image = remove_calipers_preserve_texture(image, caliper_mask)
+    
+    # Xóa text bằng OCR
     image = remove_text_and_callipers(image)
 
     # Bước 2: Tăng cường chất lượng
@@ -68,7 +79,6 @@ import os
 import requests
 import logging
 
-from .preprocess import detect_safe_area, remove_text_and_callipers, detect_calipers
 from .enhance import apply_srad, adjust_brightness_contrast, adjust_sharpness
 from .xml_exporter import save_to_combined_xml
 from .augment import augment_image_and_xml
@@ -85,8 +95,8 @@ def send_progress_webhook(url, job_id, processed, total):
             pass
     threading.Thread(target=_send, daemon=True).start()
 
-# Thư mục chứa template caliper tĩnh (nằm cùng cấp với pipeline.py)
-TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "templates")
+# Templates dir đã được khai báo ở trên
+
 
 def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, options: dict):
     """
@@ -160,8 +170,8 @@ def batch_process_dataset(job_id: str, zip_bytes: bytes, webhook_url: str, optio
                     
                     # 3. Xóa Caliper & Chữ trên ảnh gốc (nếu được yêu cầu)
                     if options.get("enable_text_removal", False):
-                        # Xóa caliper bằng mask vừa tìm được
-                        image = cv2.inpaint(image, caliper_mask, 3, cv2.INPAINT_TELEA)
+                        # Xóa caliper giữ nguyên texture, cấu trúc và màu sắc ảnh siêu âm
+                        image = remove_calipers_preserve_texture(image, caliper_mask)
                         # Dùng OCR để xóa các chữ viết khác
                         image = remove_text_and_callipers(image)
                         

@@ -32,6 +32,23 @@ Sau khi cả 3 server đều báo đã chạy thành công, hãy mở trình duy
 
 ---
 
+### 🎨 Thử nghiệm trực tiếp với Mockup UI (Không cần Backend/Frontend)
+
+Nếu bạn chỉ muốn kiểm tra nhanh thuật toán **Xóa thước đo (Caliper)** với tính năng giữ nguyên màu sắc, cấu trúc và đặc trưng nhiễu hạt (speckle noise) mà không cần bật toàn bộ hệ thống, bạn có thể dùng Mockup UI được tích hợp sẵn:
+
+1. Chạy AI Service (Python FastAPI):
+```powershell
+cd C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python
+.\venv\Scripts\activate
+python main.py
+```
+2. Mở trình duyệt và truy cập:
+👉 **[http://localhost:8000/mockup](http://localhost:8000/mockup)**
+
+Giao diện sẽ cho phép bạn kéo thả/tải lên 1 file ảnh siêu âm và xem kết quả xử lý của thuật toán ngay lập tức.
+
+---
+
 ### Cấu trúc dự án
 - `main.py`: Các API endpoints của FastAPI (`/api/v1/ai/...`).
 - `core_pipeline/`: Chứa mã nguồn lõi xử lý ảnh.
