@@ -1,0 +1,425 @@
+2026-08-16 01:24:35,148 [INFO] matplotlib.font_manager: generated new fontManager
+2026-08-16 01:32:56,812 [INFO] core_pipeline.training: [JOB 74398913-3f34-49aa-94ec-da3fcd0fe546] Bắt đầu quá trình Training yolov8_resnet với 50 epochs...
+2026-08-16 01:32:56,812 [INFO] core_pipeline.training: [JOB 74398913-3f34-49aa-94ec-da3fcd0fe546] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_74398913-3f34-49aa-94ec-da3fcd0fe546.zip
+2026-08-16 01:41:30,702 [INFO] core_pipeline.training: [JOB 77ce8411-8975-4516-94d3-f22a95ea5b55] Bắt đầu quá trình Training yolov8_resnet với 50 epochs...
+2026-08-16 01:41:30,702 [INFO] core_pipeline.training: [JOB 77ce8411-8975-4516-94d3-f22a95ea5b55] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_77ce8411-8975-4516-94d3-f22a95ea5b55.zip
+2026-08-16 01:44:31,122 [INFO] core_pipeline.training: [JOB 77ce8411-8975-4516-94d3-f22a95ea5b55] Quá trình Training hoàn tất!
+2026-08-16 01:44:31,123 [INFO] core_pipeline.evaluate: Đang bắt đầu đánh giá model: weights/trained_yolov8_resnet_77ce8411-8975-4516-94d3-f22a95ea5b55/weights/best.pt ...
+2026-08-16 01:44:31,123 [INFO] core_pipeline.evaluate: Đánh giá trên tập test từ: C:\Users\ADMIN~1.DES\AppData\Local\Temp\tmpxihabwyn\dataset\data.yaml
+2026-08-16 01:44:31,670 [ERROR] core_pipeline.evaluate: Lỗi trong quá trình đánh giá: [Errno 2] No such file or directory: 'weights\\trained_yolov8_resnet_77ce8411-8975-4516-94d3-f22a95ea5b55\\weights\\best.pt'
+2026-08-16 01:44:31,677 [INFO] core_pipeline.training: [JOB 77ce8411-8975-4516-94d3-f22a95ea5b55] Đã lưu kết quả tại: outputs/result_77ce8411-8975-4516-94d3-f22a95ea5b55.json
+2026-08-16 01:53:04,481 [INFO] core_pipeline.training: [JOB 2d05d8ae-f003-430d-945b-142a52170412] Bắt đầu quá trình Training yolov8_resnet với 10 epochs...
+2026-08-16 01:53:04,481 [INFO] core_pipeline.training: [JOB 2d05d8ae-f003-430d-945b-142a52170412] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_2d05d8ae-f003-430d-945b-142a52170412.zip
+2026-08-16 01:53:51,988 [INFO] core_pipeline.training: [JOB 7e749f51-88b4-41c8-ab91-c3a9ded91b83] Bắt đầu quá trình Training yolov8_resnet với 10 epochs...
+2026-08-16 01:53:51,988 [INFO] core_pipeline.training: [JOB 7e749f51-88b4-41c8-ab91-c3a9ded91b83] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_7e749f51-88b4-41c8-ab91-c3a9ded91b83.zip
+2026-08-16 01:53:54,465 [ERROR] core_pipeline.training: [JOB 7e749f51-88b4-41c8-ab91-c3a9ded91b83] Quá trình training thất bại: Dataset 'C://Users/ADMIN~1.DES/AppData/Local/Temp/tmp9y3nbdkp/dataset/data.yaml' error  Dataset 'C://Users/ADMIN~1.DES/AppData/Local/Temp/tmp9y3nbdkp/dataset/data.yaml' images not found, missing path 'C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\images\train'
+Note dataset download directory is 'C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\datasets'. You can update this in 'C:\Users\Admin.DESKTOP-7UBJTVF\AppData\Roaming\Ultralytics\settings.json'
+2026-08-16 01:54:33,848 [INFO] core_pipeline.training: [JOB 68cb36a0-2236-4a63-8483-9607032c4509] Bắt đầu quá trình Training yolov8_resnet với 10 epochs...
+2026-08-16 01:54:33,848 [INFO] core_pipeline.training: [JOB 68cb36a0-2236-4a63-8483-9607032c4509] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_68cb36a0-2236-4a63-8483-9607032c4509.zip
+2026-08-16 01:54:34,692 [ERROR] core_pipeline.training: [JOB 68cb36a0-2236-4a63-8483-9607032c4509] Quá trình training thất bại: Dataset 'C://Users/ADMIN~1.DES/AppData/Local/Temp/tmpn8x4got2/dataset/data.yaml' error  Dataset 'C://Users/ADMIN~1.DES/AppData/Local/Temp/tmpn8x4got2/dataset/data.yaml' images not found, missing path 'C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\images\train'
+Note dataset download directory is 'C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\datasets'. You can update this in 'C:\Users\Admin.DESKTOP-7UBJTVF\AppData\Roaming\Ultralytics\settings.json'
+2026-08-16 01:55:23,520 [INFO] core_pipeline.training: [JOB 5d61e77d-e204-4f8e-95c5-57c8ad8ce40a] Bắt đầu quá trình Training yolov8_resnet với 10 epochs...
+2026-08-16 01:55:23,520 [INFO] core_pipeline.training: [JOB 5d61e77d-e204-4f8e-95c5-57c8ad8ce40a] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_5d61e77d-e204-4f8e-95c5-57c8ad8ce40a.zip
+2026-08-16 01:56:06,731 [INFO] core_pipeline.training: [JOB 5d61e77d-e204-4f8e-95c5-57c8ad8ce40a] Quá trình Training hoàn tất!
+2026-08-16 01:56:06,732 [INFO] core_pipeline.evaluate: Đang bắt đầu đánh giá model: weights/trained_yolov8_resnet_5d61e77d-e204-4f8e-95c5-57c8ad8ce40a/weights/best.pt ...
+2026-08-16 01:56:06,732 [INFO] core_pipeline.evaluate: Đánh giá trên tập test từ: C:\Users\ADMIN~1.DES\AppData\Local\Temp\tmpywjhn5cw\dataset\data.yaml
+2026-08-16 01:56:08,532 [INFO] core_pipeline.evaluate: Quá trình đánh giá hoàn tất.
+2026-08-16 01:56:08,538 [INFO] core_pipeline.training: [JOB 5d61e77d-e204-4f8e-95c5-57c8ad8ce40a] Đã lưu kết quả tại: outputs/result_5d61e77d-e204-4f8e-95c5-57c8ad8ce40a.json
+2026-08-16 01:59:33,667 [INFO] core_pipeline.training: [JOB 58e4aa0b-6e72-42a8-b7cb-06ba39ce88eb] Bắt đầu quá trình Training yolov8_resnet với 10 epochs...
+2026-08-16 01:59:33,667 [INFO] core_pipeline.training: [JOB 58e4aa0b-6e72-42a8-b7cb-06ba39ce88eb] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_58e4aa0b-6e72-42a8-b7cb-06ba39ce88eb.zip
+2026-08-16 01:59:53,755 [INFO] core_pipeline.training: [JOB fc1242b9-821d-443e-b38c-6b59503a86d9] Bắt đầu quá trình Training yolov8_resnet với 100 epochs...
+2026-08-16 01:59:53,755 [INFO] core_pipeline.training: [JOB fc1242b9-821d-443e-b38c-6b59503a86d9] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_fc1242b9-821d-443e-b38c-6b59503a86d9.zip
+2026-08-16 03:13:39,869 [INFO] core_pipeline.training: [JOB 58e4aa0b-6e72-42a8-b7cb-06ba39ce88eb] Quá trình Training hoàn tất!
+2026-08-16 03:13:39,872 [INFO] core_pipeline.evaluate: Đang bắt đầu đánh giá model: weights/trained_yolov8_resnet_58e4aa0b-6e72-42a8-b7cb-06ba39ce88eb/weights/best.pt ...
+2026-08-16 03:13:39,872 [INFO] core_pipeline.evaluate: Đánh giá trên tập test từ: C:\Users\ADMIN~1.DES\AppData\Local\Temp\tmpmkjtpz5a\dataset\data.yaml
+2026-08-16 03:15:07,513 [INFO] core_pipeline.evaluate: Quá trình đánh giá hoàn tất.
+2026-08-16 03:15:08,158 [INFO] core_pipeline.training: [JOB 58e4aa0b-6e72-42a8-b7cb-06ba39ce88eb] Đã lưu kết quả tại: outputs/result_58e4aa0b-6e72-42a8-b7cb-06ba39ce88eb.json
+2026-08-16 09:09:11,668 [INFO] core_pipeline.training: [JOB fc1242b9-821d-443e-b38c-6b59503a86d9] Quá trình Training hoàn tất!
+2026-08-16 09:09:11,669 [INFO] core_pipeline.evaluate: Đang bắt đầu đánh giá model: weights/trained_yolov8_resnet_fc1242b9-821d-443e-b38c-6b59503a86d9/weights/best.pt ...
+2026-08-16 09:09:11,669 [INFO] core_pipeline.evaluate: Đánh giá trên tập test từ: C:\Users\ADMIN~1.DES\AppData\Local\Temp\tmp3saw0tzb\dataset\data.yaml
+2026-08-16 09:10:01,902 [INFO] core_pipeline.evaluate: Quá trình đánh giá hoàn tất.
+2026-08-16 09:10:02,292 [INFO] core_pipeline.training: [JOB fc1242b9-821d-443e-b38c-6b59503a86d9] Đã lưu kết quả tại: outputs/result_fc1242b9-821d-443e-b38c-6b59503a86d9.json
+2026-08-16 11:17:13,988 [INFO] watchfiles.main: 2 changes detected
+2026-08-16 11:17:14,344 [INFO] watchfiles.main: 6 changes detected
+2026-08-16 11:17:14,702 [INFO] watchfiles.main: 4 changes detected
+2026-08-16 11:17:15,078 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:15,433 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:15,791 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:16,153 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:16,512 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:16,875 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:17,230 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:17,591 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:17,947 [INFO] watchfiles.main: 3 changes detected
+2026-08-16 11:17:18,306 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:18,667 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:19,025 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:19,385 [INFO] watchfiles.main: 2 changes detected
+2026-08-16 11:17:19,742 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:20,101 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:20,461 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:20,818 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:21,181 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:21,686 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:22,050 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:22,409 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:22,770 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:23,127 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:23,487 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:23,845 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:24,206 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:24,565 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:24,925 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:25,282 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:25,640 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:26,000 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:26,357 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:26,715 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:27,079 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:27,435 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:27,946 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:28,312 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:28,673 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:29,033 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:29,395 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:29,762 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:30,121 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:30,482 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:30,844 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:31,206 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:31,566 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:31,926 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:32,285 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:32,646 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:33,004 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:33,366 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:33,726 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:34,084 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:34,447 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:34,804 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:35,166 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:35,527 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:36,548 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:37,319 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:37,671 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:38,030 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:38,395 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:38,753 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:39,113 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:39,473 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:39,834 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:40,298 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:40,700 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:41,056 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:41,418 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:41,779 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:42,141 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:42,502 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:42,865 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:43,479 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:43,838 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:44,197 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:44,558 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:44,919 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:45,282 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:45,641 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:46,002 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:46,363 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:46,725 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:47,083 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:47,446 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:47,808 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:48,170 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:48,530 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:48,891 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:49,251 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:49,610 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:49,966 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:50,326 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:50,684 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:51,042 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:51,401 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:51,759 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:52,115 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:52,474 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:52,835 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:53,192 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:53,551 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:53,911 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:54,272 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:54,631 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:54,989 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:55,348 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:55,708 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:56,067 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:56,426 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:56,785 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:57,147 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:57,503 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:57,862 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:58,224 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:58,584 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:58,943 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:59,303 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:17:59,664 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:00,023 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:00,382 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:00,743 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:01,101 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:01,458 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:01,814 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:02,175 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:02,535 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:02,896 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:03,252 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:03,609 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:03,971 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:04,332 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:04,692 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:05,051 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:05,413 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:05,776 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:06,135 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:06,494 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:06,855 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:07,217 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:07,576 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:07,936 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:08,299 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:08,658 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:09,017 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:09,375 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:09,732 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:10,093 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:10,454 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:10,815 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:11,175 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:11,539 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:11,898 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:12,259 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:12,620 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:12,981 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:13,343 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:13,702 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:14,064 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:14,424 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:14,785 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:15,146 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:15,504 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:15,867 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:16,226 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:16,587 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:16,949 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:17,310 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:17,669 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:18,032 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:18,395 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:18,756 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:19,117 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:19,479 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:19,840 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:20,200 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:20,562 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:20,922 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:21,280 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:21,641 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:22,001 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:22,361 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:22,722 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:23,083 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:23,440 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:23,803 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:24,163 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:24,521 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:24,878 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:25,235 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:25,596 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:25,956 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:26,317 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:26,680 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:27,039 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:27,395 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:27,754 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:28,113 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:28,476 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:28,836 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:29,195 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:29,554 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:29,663 [INFO] core_pipeline.training: [JOB 7a9d9acd-6c8b-4d9c-bf9f-aa15478d4ee7] Bắt đầu quá trình Training yolov26_resnet với 10 epochs...
+2026-08-16 11:18:29,727 [INFO] core_pipeline.training: [JOB 7a9d9acd-6c8b-4d9c-bf9f-aa15478d4ee7] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_7a9d9acd-6c8b-4d9c-bf9f-aa15478d4ee7.zip
+2026-08-16 11:18:29,915 [INFO] watchfiles.main: 2 changes detected
+2026-08-16 11:18:30,276 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:30,639 [INFO] watchfiles.main: 2 changes detected
+2026-08-16 11:18:30,999 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:31,356 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:31,714 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:32,072 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:32,433 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:32,791 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:33,151 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:33,507 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:33,864 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:34,223 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:34,581 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:34,941 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:35,303 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:35,664 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:36,024 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:36,382 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:36,741 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:37,099 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:37,462 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:37,819 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:38,178 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:38,539 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:38,895 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:39,256 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:39,618 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:39,981 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:40,341 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:40,699 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:41,060 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:41,418 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:41,777 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:41,930 [ERROR] core_pipeline.training: [JOB 7a9d9acd-6c8b-4d9c-bf9f-aa15478d4ee7] Quá trình training thất bại: [Errno 2] No such file or directory: 'yolov26n.pt'
+2026-08-16 11:18:42,137 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:42,497 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:42,853 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:43,214 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:43,576 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:43,939 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:44,301 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:44,661 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:45,019 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:45,380 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:45,743 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:46,106 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:46,464 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:46,827 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:47,188 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:47,548 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:47,911 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:48,272 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:48,630 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:48,991 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:49,351 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:49,714 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:50,067 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:50,428 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:50,786 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:51,148 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:51,509 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:51,868 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:52,227 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:52,586 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:52,943 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:53,302 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:53,660 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:54,018 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:54,378 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:54,739 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:55,099 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:55,460 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:55,817 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:56,174 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:56,535 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:56,896 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:57,255 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:57,619 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:57,977 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:58,336 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:58,696 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:59,056 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:59,416 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:18:59,773 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:00,133 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:00,493 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:00,851 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:01,210 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:01,569 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:01,927 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:02,287 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:02,645 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:03,002 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:03,364 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:03,721 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:04,079 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:04,436 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:04,797 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:05,161 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:05,520 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:05,879 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:06,243 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:06,603 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:06,960 [INFO] watchfiles.main: 2 changes detected
+2026-08-16 11:19:22,610 [INFO] core_pipeline.training: [JOB 0a942da1-f79a-44b7-a26c-631686ac466c] Bắt đầu quá trình Training yolov26_resnet với 10 epochs...
+2026-08-16 11:19:22,610 [INFO] core_pipeline.training: [JOB 0a942da1-f79a-44b7-a26c-631686ac466c] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_0a942da1-f79a-44b7-a26c-631686ac466c.zip
+2026-08-16 11:19:23,856 [ERROR] core_pipeline.training: [JOB 0a942da1-f79a-44b7-a26c-631686ac466c] Quá trình training thất bại: [Errno 2] No such file or directory: 'yolov26n.pt'
+2026-08-16 11:19:25,396 [INFO] watchfiles.main: 3 changes detected
+2026-08-16 11:19:26,463 [INFO] watchfiles.main: 8 changes detected
+2026-08-16 11:19:26,823 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:27,183 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:27,544 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:27,901 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:19:28,259 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:32,271 [INFO] watchfiles.main: 2 changes detected
+2026-08-16 11:22:33,280 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:46,907 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:47,259 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:47,619 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:47,980 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:48,340 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:48,701 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:49,061 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:49,423 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:49,785 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:50,144 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:50,503 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:50,862 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:51,222 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:51,580 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:51,939 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:52,301 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:52,661 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:53,019 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:53,379 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:53,741 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:54,101 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:54,463 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:54,822 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:55,180 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:55,541 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:55,901 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:56,258 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:56,619 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:56,975 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:57,334 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:57,694 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:58,053 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:58,413 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:58,772 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:59,133 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:59,494 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:22:59,856 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:23:00,217 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:23:00,575 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:23:00,935 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:23:01,294 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:23:01,651 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:23:02,009 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:23:02,369 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:23:02,729 [INFO] watchfiles.main: 1 change detected
+2026-08-16 11:23:43,991 [INFO] core_pipeline.training: [JOB 528786cd-9cfc-487a-8709-7587c5f5c490] Bắt đầu quá trình Training yolov26_resnet với 10 epochs...
+2026-08-16 11:23:43,991 [INFO] core_pipeline.training: [JOB 528786cd-9cfc-487a-8709-7587c5f5c490] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_528786cd-9cfc-487a-8709-7587c5f5c490.zip
+2026-08-16 11:28:40,130 [INFO] core_pipeline.training: [JOB 528786cd-9cfc-487a-8709-7587c5f5c490] Quá trình Training hoàn tất!
+2026-08-16 11:28:40,131 [INFO] core_pipeline.evaluate: Đang bắt đầu đánh giá model: weights/trained_yolov26_resnet_528786cd-9cfc-487a-8709-7587c5f5c490/weights/best.pt ...
+2026-08-16 11:28:40,132 [INFO] core_pipeline.evaluate: Đánh giá trên tập test từ: C:\Users\ADMIN~1.DES\AppData\Local\Temp\tmp14225mwc\dataset\data.yaml
+2026-08-16 11:28:45,086 [INFO] core_pipeline.evaluate: Quá trình đánh giá hoàn tất.
+2026-08-16 11:28:45,099 [INFO] core_pipeline.training: [JOB 528786cd-9cfc-487a-8709-7587c5f5c490] Đã lưu kết quả tại: outputs/result_528786cd-9cfc-487a-8709-7587c5f5c490.json
+2026-08-16 11:31:34,130 [INFO] core_pipeline.training: [JOB aef172d6-c9e4-469e-81a2-5bd18b985f7c] Bắt đầu quá trình Training yolov26_resnet với 10 epochs...
+2026-08-16 11:31:34,130 [INFO] core_pipeline.training: [JOB aef172d6-c9e4-469e-81a2-5bd18b985f7c] Sử dụng dataset từ: C:\Users\Admin\Documents\GitHub\Med_superApp\Med_superApp_Python\outputs\dataset_aef172d6-c9e4-469e-81a2-5bd18b985f7c.zip
+2026-08-16 11:35:22,311 [INFO] core_pipeline.training: [JOB aef172d6-c9e4-469e-81a2-5bd18b985f7c] Quá trình Training hoàn tất!
+2026-08-16 11:35:22,312 [INFO] core_pipeline.evaluate: Đang bắt đầu đánh giá model: weights/trained_yolov26_resnet_aef172d6-c9e4-469e-81a2-5bd18b985f7c/weights/best.pt ...
+2026-08-16 11:35:22,312 [INFO] core_pipeline.evaluate: Đánh giá trên tập test từ: C:\Users\ADMIN~1.DES\AppData\Local\Temp\tmpcpz4xd2s\dataset\10 images\data.yaml
+2026-08-16 11:35:26,822 [INFO] core_pipeline.evaluate: Quá trình đánh giá hoàn tất.
+2026-08-16 11:35:26,833 [INFO] core_pipeline.training: [JOB aef172d6-c9e4-469e-81a2-5bd18b985f7c] Đã lưu kết quả tại: outputs/result_aef172d6-c9e4-469e-81a2-5bd18b985f7c.json
