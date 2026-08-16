@@ -14,7 +14,7 @@ job_statuses = {}
 
 def train_yolo_resnet(job_id: str, model_type: str, epochs: int, webhook_url: str, dataset_path: str = None):
     """
-    Hàm giả lập quá trình Training YOLOv8 + ResNet50.
+    Hàm giả lập quá trình Training YOLOv26 + ResNet50.
     Chạy ngầm trong BackgroundTask. Khi xong sẽ gọi evaluation và bắn webhook.
     """
     job_statuses[job_id] = {
@@ -80,7 +80,7 @@ def train_yolo_resnet(job_id: str, model_type: str, epochs: int, webhook_url: st
         job_statuses[job_id]["progress"] = f"Đang huấn luyện mô hình ({epochs} epochs)..."
         
         # Chọn model nền tương ứng với model_type
-        base_model = "yolov8n.pt"  # Mặc định sử dụng YOLOv8 nano cho nhanh
+        base_model = "yolo26m.pt"  # Sử dụng YOLOv26 medium (file bạn vừa tải lên)
         if "yolov11" in model_type:
             base_model = "yolo11n.pt"
             
@@ -102,6 +102,16 @@ def train_yolo_resnet(job_id: str, model_type: str, epochs: int, webhook_url: st
             job_statuses[job_id]["status"] = "failed"
             job_statuses[job_id]["progress"] = f"Lỗi Training: {e}"
             return
+
+        # Generate results.xlsx from results.csv
+        try:
+            import pandas as pd
+            csv_path = os.path.join(abs_weights_dir, f"trained_{model_type}_{job_id}", "results.csv")
+            if os.path.exists(csv_path):
+                df = pd.read_csv(csv_path)
+                df.to_excel(os.path.join(abs_weights_dir, f"trained_{model_type}_{job_id}", "results.xlsx"), index=False)
+        except Exception as e:
+            logger.warning(f"Không thể tạo file results.xlsx: {e}")
 
         logger.info(f"[JOB {job_id}] Quá trình Training hoàn tất!")
         

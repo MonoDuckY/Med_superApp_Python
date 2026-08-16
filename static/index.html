@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLOv26 AI Training Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --bg-color: #0f172a;
+            --surface: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(79, 172, 254, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 242, 254, 0.15) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .glass-panel {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0, 242, 254, 0.15);
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 2.2rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-wrapper:hover, .file-upload-wrapper.dragover {
+            border-color: var(--primary);
+            background: rgba(0, 242, 254, 0.05);
+        }
+
+        .file-upload-wrapper svg {
+            width: 48px;
+            height: 48px;
+            fill: var(--text-muted);
+            margin-bottom: 1rem;
+            transition: fill 0.3s ease;
+        }
+
+        .file-upload-wrapper:hover svg {
+            fill: var(--primary);
+        }
+
+        .file-name {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            appearance: none;
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+        }
+
+        select option {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px -10px rgba(0, 242, 254, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -10px rgba(0, 242, 254, 0.7);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn:disabled {
+            background: #475569;
+            box-shadow: none;
+            cursor: not-allowed;
+            color: #94a3b8;
+        }
+        
+        .btn:disabled::after {
+            display: none;
+        }
+
+        /* Status Section */
+        .status-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: none;
+        }
+
+        .status-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .status-text {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .metric-card {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.2rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="glass-panel">
+            <h1>YOLOv26 Trainer</h1>
+            <p class="subtitle">Next-Gen Medical AI Training Interface</p>
+
+            <form id="trainForm">
+                <div class="form-group">
+                    <label>Upload Dataset (.zip)</label>
+                    <div class="file-upload-wrapper" id="dropzone" onclick="document.getElementById('datasetFile').click()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"></path>
+                        </svg>
+                        <span style="color: var(--text-muted)">Drag & drop or click to browse</span>
+                        <input type="file" id="datasetFile" accept=".zip" required>
+                        <div class="file-name" id="fileName"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="modelType">Model Architecture</label>
+                    <select id="modelType" required>
+                        <option value="yolov26_resnet">YOLOv26 + ResNet50 (Premium)</option>
+                        <option value="yolov11_resnet">YOLO11 + ResNet50</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="epochs">Training Epochs</label>
+                    <input type="number" id="epochs" value="50" min="1" max="1000" required>
+                </div>
+
+                <button type="submit" class="btn" id="trainBtn">🚀 Start Training</button>
+            </form>
+
+            <div class="status-section" id="statusSection">
+                <div class="status-title">
+                    <span>Training Status</span>
+                    <div class="spinner" id="statusSpinner"></div>
+                </div>
+                <div class="status-text" id="statusText">Initializing GPU instances...</div>
+                
+                <div id="metricsArea" style="display: none;">
+                    <div class="metrics-grid" id="metricsGrid">
+                        <!-- Filled dynamically -->
+                    </div>
+                    <div style="margin-top: 1.5rem; text-align: center;">
+                        <span style="color: var(--secondary); font-size: 0.9rem;">✅ <strong>results.xlsx</strong> has been generated and saved!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('datasetFile');
+        const fileName = document.getElementById('fileName');
+        const form = document.getElementById('trainForm');
+        const btn = document.getElementById('trainBtn');
+        const statusSection = document.getElementById('statusSection');
+        const statusText = document.getElementById('statusText');
+        const statusSpinner = document.getElementById('statusSpinner');
+        const metricsArea = document.getElementById('metricsArea');
+        const metricsGrid = document.getElementById('metricsGrid');
+
+        // File upload UI
+        fileInput.addEventListener('change', function() {
+            if(this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+            }
+        });
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            if(e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                fileName.textContent = fileInput.files[0].name;
+            }
+        });
+
+        let pollInterval;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if(fileInput.files.length === 0) {
+                alert("Please select a dataset zip file first.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('dataset', fileInput.files[0]);
+            formData.append('model_type', document.getElementById('modelType').value);
+            formData.append('epochs', document.getElementById('epochs').value);
+
+            btn.disabled = true;
+            btn.textContent = "Processing...";
+            statusSection.style.display = "block";
+            statusText.textContent = "Uploading dataset...";
+            metricsArea.style.display = "none";
+            statusSpinner.style.display = "block";
+
+            try {
+                const response = await fetch('/api/v1/ai/research/train-model', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if(data.success && data.data && data.data.job_id) {
+                    pollStatus(data.data.job_id);
+                } else {
+                    statusText.textContent = `Error: ${data.message}`;
+                    btn.disabled = false;
+                    btn.textContent = "🚀 Start Training";
+                    statusSpinner.style.display = "none";
+                }
+            } catch (err) {
+                statusText.textContent = `Error connecting to server.`;
+                btn.disabled = false;
+                btn.textContent = "🚀 Start Training";
+                statusSpinner.style.display = "none";
+            }
+        });
+
+        async function pollStatus(jobId) {
+            pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/v1/ai/research/job-status/${jobId}`);
+                    const res = await response.json();
+                    
+                    if(res.success) {
+                        const job = res.data;
+                        statusText.innerHTML = `<strong>Status:</strong> ${job.status.toUpperCase()} <br> <strong>Progress:</strong> ${job.progress}`;
+                        
+                        if(job.status === 'completed' || job.status === 'success') {
+                            clearInterval(pollInterval);
+                            statusSpinner.style.display = "none";
+                            btn.disabled = false;
+                            btn.textContent = "Train Another Model";
+                            
+                            if(job.metrics) {
+                                renderMetrics(job.metrics);
+                            }
+                        } else if(job.status === 'failed' || job.status === 'error') {
+                            clearInterval(pollInterval);
+                            statusSpinner.style.display = "none";
+                            statusText.innerHTML += `<br><span style="color: #ef4444">Training failed. Check logs.</span>`;
+                            btn.disabled = false;
+                            btn.textContent = "Retry Training";
+                        }
+                    }
+                } catch (err) {
+                    console.log("Polling error:", err);
+                }
+            }, 2000);
+        }
+
+        function renderMetrics(metrics) {
+            metricsArea.style.display = "block";
+            metricsGrid.innerHTML = '';
+            
+            // Just display some common YOLO metrics if present
+            const m = metrics || {};
+            const displayKeys = ['mAP50', 'mAP50-95', 'precision', 'recall'];
+            
+            displayKeys.forEach(k => {
+                if(m[k] !== undefined) {
+                    metricsGrid.innerHTML += `
+                        <div class="metric-card">
+                            <div class="metric-value">${(m[k] * 100).toFixed(1)}%</div>
+                            <div class="metric-label">${k}</div>
+                        </div>
+                    `;
+                }
+            });
+            
+            // Fallback if no specific keys found
+            if(metricsGrid.innerHTML === '') {
+                metricsGrid.innerHTML = `
+                    <div class="metric-card" style="grid-column: span 2">
+                        <div class="metric-value">SUCCESS</div>
+                        <div class="metric-label">Training Completed</div>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

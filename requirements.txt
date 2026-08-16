@@ -9,3 +9,7 @@ torch
 torchvision
 scikit-image
 requests
+pillow>=10.0
+ultralytics>=8.1
+huggingface_hub
+python-dotenv

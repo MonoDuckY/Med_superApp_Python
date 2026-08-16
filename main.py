@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form, BackgroundTasks, HTTPException, Header
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import io
@@ -61,6 +62,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+async def root():
+    return FileResponse("static/index.html")
 
 @app.get("/health")
 def health_check():
@@ -313,7 +320,7 @@ async def preprocess_dataset(
 async def train_model(
     background_tasks: BackgroundTasks,
     dataset: UploadFile = File(...),
-    model_type: str = Form("yolov8_resnet"),
+    model_type: str = Form("yolov26_resnet"),
     epochs: int = Form(50),
     webhook_url: str = Form("")
 ):
