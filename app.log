@@ -1,0 +1,7 @@
+2026-08-16 02:40:30,986 [INFO] core_pipeline.training: [JOB fcd4bcb7-4e40-4112-8144-5c91285307d1] Bắt đầu quá trình Training yolov8_resnet với 100 epochs...
+2026-08-16 02:40:30,987 [INFO] core_pipeline.training: [JOB fcd4bcb7-4e40-4112-8144-5c91285307d1] Sử dụng dataset từ: C:\Users\Acer\Documents\GitHub\Med_superApp_Python\outputs\dataset_fcd4bcb7-4e40-4112-8144-5c91285307d1.zip
+2026-08-16 15:44:11,131 [INFO] core_pipeline.training: [JOB fcd4bcb7-4e40-4112-8144-5c91285307d1] Quá trình Training hoàn tất!
+2026-08-16 15:44:11,131 [INFO] core_pipeline.evaluate: Đang bắt đầu đánh giá model: weights/trained_yolov8_resnet_fcd4bcb7-4e40-4112-8144-5c91285307d1/weights/best.pt ...
+2026-08-16 15:44:11,132 [INFO] core_pipeline.evaluate: Đánh giá trên tập test từ: C:\Users\Acer\AppData\Local\Temp\tmpvm8z30lf\dataset\data.yaml
+2026-08-16 15:44:31,327 [INFO] core_pipeline.evaluate: Quá trình đánh giá hoàn tất.
+2026-08-16 15:44:31,816 [INFO] core_pipeline.training: [JOB fcd4bcb7-4e40-4112-8144-5c91285307d1] Đã lưu kết quả tại: outputs/result_fcd4bcb7-4e40-4112-8144-5c91285307d1.json

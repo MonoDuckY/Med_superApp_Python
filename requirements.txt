@@ -9,3 +9,7 @@ torch
 torchvision
 scikit-image
 requests
+ultralytics
+pyyaml
+huggingface_hub
+python-dotenv
