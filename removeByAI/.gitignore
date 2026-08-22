@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# LaMa model and downloaded archives
+big-lama/
+big-lama.zip
+lama-models.zip
+
+# Runtime inputs/outputs and temporary test files
+input/
+output/
+outputs/
+test_lama_*/
+auto_lama_*/
+*_mask*.png
+*.log
+
+# Local IDE / OS files
+.vscode/
+.idea/
+*.code-workspace
+Thumbs.db
+.DS_Store
